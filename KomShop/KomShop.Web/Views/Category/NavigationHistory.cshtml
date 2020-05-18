@@ -1,0 +1,11 @@
+﻿@model KomShop.Web.Models.NavigationHistoryModel
+@Html.ActionLink("Strona główna", "Index", "Home") <span style="margin-left: 10px; margin-top: 5px;" class="glyphicon glyphicon-chevron-right"></span>
+@Html.ActionLink(Model.Section, "ShowCategories","Category", new { section = Model.Section}, null)
+@if(Model.Category != null)
+{
+    <span style="margin-left: 10px; margin-top: 5px;" class="glyphicon glyphicon-chevron-right"></span> @Html.ActionLink(Model.Category, "ShowProducts","Products", new { category = Model.Category }, null)
+}
+@if(Model.SubCategory != null)
+{
+<span style="margin-left: 10px; margin-top: 5px;" class="glyphicon glyphicon-chevron-right"></span>@Html.ActionLink(Model.SubCategory, "ShowProducts","Products", new { category = Model.Category, subcategory = Model.SubCategory })
+}

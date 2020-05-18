@@ -1,0 +1,34 @@
+﻿@model KomShop.Web.Models.CPU
+
+@{
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        Url = "FiltrProcesory",
+        UpdateTargetId = "items"
+    };
+}
+<script>
+    function setsort() {
+        $("#sub").click();
+    }
+</script>
+@using (Ajax.BeginForm(null, null, ajaxOpts, new { @class = "form-group row", @style = "margin-left: 5px" }))
+{
+    <h5>Cena:</h5>
+    <span class="form-inline" style="font-size: 16px; font-weight: 500; padding-bottom: 10px;">
+        Od: @Html.TextBoxFor(m => m.pricemin, new { @class = "form-control col-sm-4", @style = "margin-left: 10px; text-align: right", @Value = "" })
+        <b style="margin-left: 15px"></b>do: @Html.TextBoxFor(m => m.pricemax, new { @class = "form-control col-sm-4", @style = "margin-left: 10px; text-align: right", @Value = "" })
+    </span>
+    <h5 style="margin-top: 5px">Socket</h5>
+    @Html.DropDownList("socket", Model.Socket.AsEnumerable(),"Proszę wybrać", new { @class = "form-control col-sm-7", @style = "margin-left: 48px;" })
+    <h5 style="margin-top: 14px;">Liczba rdzeni:</h5>
+    @Html.DropDownList("cores", Model.Cores.AsEnumerable(),"Proszę wybrać", new { @class = "form-control col-sm-6", @style = "margin-left: 11px; margin-top: 10px" })
+    <h5>Pamięć cache</h5>
+    <span class="form-inline" style="font-size: 16px; font-weight: 500; padding-bottom: 10px;">
+        Od: @Html.TextBoxFor(m => m.cachemin, new { @class = "form-control col-sm-4", @style = "margin-left: 10px; text-align: right", @Value = "" })
+        <b style="margin-left: 15px"></b>do: @Html.TextBoxFor(m => m.cachemax, new { @class = "form-control col-sm-4", @style = "margin-left: 10px; text-align: right", @Value = "" })
+    </span>
+    <button class="btn btn-secondary" style="margin-left: 35px" type="reset" ><span style="margin-right: 5px; margin-top: 5px;" class="glyphicon glyphicon-repeat"></span>Resetuj</button>
+    <button class="btn btn-success" style="margin-left: 60px;" onclick="setsort()" type="submit" ><span style="margin-right: 5px; margin-top: 5px;" class="glyphicon glyphicon-search"></span>Filtruj</button>
+    <input type="submit" style="display: none" id="sub2" />
+}

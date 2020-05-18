@@ -1,0 +1,40 @@
+﻿@model KomShop.Web.Entities.Users
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+    ViewBag.Title = "Strona logowania";
+}
+
+@using(Html.BeginForm("Index","Login",FormMethod.Post))
+{
+    <div class="card shadow-lg row form-inline border-secondary" style="width: 900px; height: 350px; margin: auto; margin-top: 110px; text-align: center">
+        <div class="float-left col-7" style="width: 400px; margin-top: 20px">
+            <div>
+                <h3>Mam już konto</h3>
+                <span>Masz już konto? Wpisz swoje dane.</span>
+            </div>
+            <div class="card-body">
+                @Html.LabelFor(m => m.Login, new { @style = "float: left; margin-left: 50px; font-size: 20px; font-weight: 500" })
+                @Html.TextBoxFor(m => m.Login, new { @class = "form-control col-sm-6 rounded-pill", @style = "float: left; margin-left: 35px;" })
+                @Html.ValidationMessageFor(m => m.Login, null, new { @style = "float: left; margin-left: 160px; color: red; padding-right: 80px;" })
+                @Html.LabelFor(m => m.Password, new { @style = " float: left; margin-left: 50px; font-size: 20px; margin-top: 23px; font-weight: 500" })
+                @Html.TextBoxFor(m => m.Password, new { @class = "form-control col-sm-6 rounded-pill", @style = "float: left;margin-top: 20px; margin-left: 35px;", @type = "password" })
+                @Html.ValidationMessageFor(m => m.Password, null, new { @style = "float: left; margin-left: 55px; color: red; padding-right: 120px" })
+                <span style="float: left; margin-left: 45px; color: red">@Model.LoginErrorMessage</span>
+                <div style="clear: both; padding-top: 25px; margin: auto">
+                    <input style="margin-left: 15px; transform: scale(1.1)" class="btn btn-outline-secondary shadow rounded-pill" type="reset" />
+                    <input style="margin-left: 25px; transform: scale(1.1); width: 150px" class="btn btn-success shadow rounded-pill" type="submit" value="Zaloguj się" />
+                </div>
+            </div>
+        </div>
+        <div style="background-color: black; width: 1px; height: 300px; margin-top: 20px; float:left">
+        </div>
+        <div class="float-left col-7" style="width: 400px; margin-top: 20px">
+            <div>
+                <h3>Nie masz jeszcze konta?</h3>
+                <span>Nie masz jeszcze konta? Kliknij załóż konto</span>
+            </div>
+            @Html.ActionLink("Załóż konto", "Register", "Login", new { @class="btn btn-outline-success rounded-pill", @style="margin-top: 25px; width: 250px;"})
+            <br /><br /><span>Dlaczego warto mieć konto? Dowiedz się <b>tutaj</b></span>
+        </div>
+    </div>
+}

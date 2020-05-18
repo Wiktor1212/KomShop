@@ -1,0 +1,15 @@
+﻿@model List<KomShop.Web.Models.SubCategoriesModel>
+@foreach (var item in Model)
+{
+    if (ViewBag.SubCategory == null || !item.Thing.Contains(ViewBag.SubCategory))
+    {
+        <span>@Ajax.ActionLink(item.ThingName, (string)ViewBag.Filtr, new {section = ViewBag.Section, category = ViewBag.Category, subcategory = item.Thing },
+             new AjaxOptions { UpdateTargetId="items"})</span>
+        <br />
+    }
+    else if (item.Thing.Contains(ViewBag.SubCategory) && ViewBag.SubCategory != null)
+    {
+        <span style="font-weight: 500; font-size: 20px">@Html.ActionLink(item.ThingName, (string)ViewBag.Filtr, new { category = ViewBag.Category, subcategory = item.Thing })</span>
+        <br />
+    }
+}

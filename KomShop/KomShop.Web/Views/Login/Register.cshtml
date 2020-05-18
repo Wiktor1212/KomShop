@@ -1,0 +1,60 @@
+﻿@model KomShop.Web.Entities.Users
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+    ViewBag.Title = "Strona rejestracji";
+}
+
+@using (Html.BeginForm("Register", "Login", FormMethod.Post))
+{
+    <div class="card shadow-lg row form-inline border-secondary" style="width: 900px; height: 550px; margin: auto; margin-top: 110px; text-align: center">
+        <div class="float-left col-7" style="width: 400px; margin-top: 20px">
+            <div>
+                <h3>Zarejestruj się</h3>
+                <span>Wpisz poniżej wymagane dane</span>
+            </div>
+            <div class="card-body">
+                @Html.LabelFor(m => m.Login, new { @style = "float: left; margin-left: 75px; font-size: 17px; font-weight: 500; margin-top: 5px;" })
+                @Html.TextBoxFor(m => m.Login, new { @class = "form-control col-sm-6 rounded-pill", @style = "float: left; margin-left: 35px;", @placeholder = "Tutaj wpisz login" })
+                @Html.ValidationMessageFor(m => m.Login, null, new { @style = "float: left; margin-left: 175px; color: red; padding-right: 55px;" })
+                <span style="float: left; margin-left: 70px; color: red">@Model.LoginErrorMessage</span>
+                @Html.LabelFor(m => m.Password, new { @style = " float: left; margin-left: 75px; font-size: 17px; margin-top: 23px; font-weight: 500" })
+                @Html.TextBoxFor(m => m.Password, new { @class = "form-control col-sm-6 rounded-pill", @style = "float: left;margin-top: 20px; margin-left: 35px;", @type = "password", @placeholder = "Tutaj wpisz hasło" })
+                @Html.ValidationMessageFor(m => m.Password, null, new { @style = "float: left; margin-left: 175px; color: red; padding-right: 55px" })
+                @Html.LabelFor(m => m.ConfirmPassword, new { @style = " float: left; margin-left: 0px; font-size: 17px; margin-top: 23px; font-weight: 500" })
+                @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control col-sm-6 rounded-pill", @style = "float: left;margin-top: 20px; margin-left: 35px;", @type = "password", @placeholder = "Potwierdź hasło" })
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, null, new { @style = "float: left; margin-left: 165px; color: red;" })
+                <div style="clear: both; padding-top: 25px; margin: auto">
+                    <input style="margin-left: 45px; transform: scale(1.1)" class="btn btn-outline-secondary shadow rounded-pill" type="reset" />
+                    <input style="margin-left: 25px; transform: scale(1.1); width: 150px" class="btn btn-success shadow rounded-pill" type="submit" value="Zarejestruj się" />
+                </div>
+            </div>
+        </div>
+        <div style="background-color: black; width: 1px; height: 500px; margin-top: 20px; float:left">
+        </div>
+        <div class="float-left col-7" style="width: 400px; margin-top: 20px">
+            <div>
+                <h3>Regulamin</h3>
+                <span style="font-weight: 500">Aby dokończyć rejestrację, musisz zaakceptować nasz regulamin.</span>
+            </div>
+            <div>
+                <ol style="font-size: 12px">
+                    <li>Przedmiotem sprzedaży są produkty, które prezentujemy na stronach WWW sklepu internetowego kom-shop.pl.</li>
+                    <li>
+                        Wszystkie produkty w sklepie internetowym kom-shop.pl są fabrycznie nowe, wolne od wad fizycznych i prawnych
+                        oraz legalnie wprowadzone na rynek polski. Możemy jednak oferować też produkty krótko używane lub pochodzące
+                        z ekspozycji, które odpowiednio oznaczamy i opisujemy w ofercie.
+                    </li>
+                    <li>
+                        Jako sprzedawca mamy obowiązek dostarczyć rzeczy wolne od wad. [Podstawa prawna: art. 556 oraz 5561–5563
+                        ustawy z dnia 23 kwietnia 1964 r. Kodeks cywilny.]
+                    </li>
+                    <li>Na bieżąco aktualizujemy ofertę produktów, które prezentujemy na stronach WWW naszego sklepu.</li>
+                    <li>W sklepie internetowym x-kom.pl nie prowadzimy sprzedaży hurtowej.</li>
+                    <li>Zanim zrobisz zakupy w naszym sklepie, masz obowiązek zapoznać się z regulaminem.</li>
+                </ol>
+                <span style="font-size: 18px; font-weight: 500">@Html.CheckBoxFor(m => m.Regulamin) Akceptuję regulamin</span>
+                @Html.ValidationMessageFor(m => m.Regulamin, null, new { @style = "float: left; margin-left: 75px; color: red; margin-top: 10px;" })
+            </div>
+        </div>
+    </div>
+}

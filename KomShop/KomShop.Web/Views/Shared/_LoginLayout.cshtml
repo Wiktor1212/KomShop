@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <script src="~/Scripts/jquery-3.0.0.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-grid.css" />
+</head>
+<body>
+    <div class="navbar navbar-dark bg-dark shadow-lg">
+        <div class="form-inline" style="width: 1280px; margin: auto">
+            <a class="navbar-brand" href="/"><h1>Kom-Shop</h1></a>
+            <h4 style="margin-left: 15px; margin-top: 30px; color: white; font-weight: 400">@ViewBag.Title</h4>
+        </div>
+    </div>
+    <div style="width: 1280px; margin: auto;">
+        @RenderBody()
+        <div class="row" id="footer" style="margin: auto; width: 900px; padding-bottom: 50px;">
+            <div class="card card-body col-5 rounded-pill border-dark" style="margin-top: 60px; background-color: #f2f2f2; padding-left: 30px;">
+                <h3>Skontaktuj się z nami</h3>
+                <span><b>Zadzwoń</b> do nas pod numer: <b>000-000-000</b></span>
+                <span><b>Napisz</b> na adres: <b>example@ex.com</b></span>
+                <span style="font-weight: 500">Będziemy szczęśliwi mogąc ci pomóc.</span>
+            </div>
+            <div class="card card-body col-6 rounded-pill border-dark" style="margin-top: 60px; background-color: #f2f2f2; padding-left: 30px; margin-left: 65px">
+                <h3>Zapisz się do newslettera</h3>
+                <span class="form-inline">
+                    @Html.TextBox("newsletter", null, new { @class = "form-control rounded-pill", @placeholder = "Wpisz swój e-mail", @style = "width: 250px" })
+                    @Html.ActionLink("Zapisz się!", "SignIn", "Newsletter", new { @class = "btn btn-outline-success rounded-pill", @style = "margin-left: 25px;width: 100px;" })
+                </span>
+                <span style="font-weight: 500">Zapisanie się do naszego newslettera zagwarantuje ci powiadomienia o wszystkin nowych promocjach!</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

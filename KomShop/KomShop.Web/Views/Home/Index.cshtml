@@ -1,0 +1,51 @@
+﻿@model  KomShop.Web.Models.HomeModel
+@{ 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Strona główna";
+}
+<div style="width: 1100px; height: 250px; border: 2px solid black; border-radius: 24px; margin: auto; margin-top: 35px;">
+    <h1>PROMOWANIE, POSTY, PROMOCJE</h1>
+</div>
+<div style="float: left">
+    <div style="width: 300px; float:left; height: 575px; border: 2px solid gray; border-radius: 20px; margin-left: 85px; margin-top: 25px">
+        <h3 style="text-align: center;">Oferty dnia</h3>
+        <!--Tutaj zaimplementować oferty dnia-->
+        @foreach(var item in Model.PoDs)
+        {
+            <div style="width: 275px; height: 250px; margin: auto">
+                <h3>@item.Brand @item.Model</h3><br />
+                <h5>@item.Description</h5><br />
+                <div>
+                    Do końca pozostało: <br />
+                    12:46:56
+                </div>
+                
+                <b class="float-right" style="font-size: 20px">@item.Price.ToString("c0")</b>
+            </div>
+            
+        }
+    </div>
+    <div style=" float: left; margin-top: 15px; margin-left: 35px; width: 760px; height: 600px">
+        <hr style="border: 1px solid gray; font-weight: 600" />
+        <h4 style="font-weight: 600">Polecamy</h4>
+        <!--Tutaj zaimplementować polecane rzeczy przez stronę-->
+        @foreach (var item in Model.PromotedThings)
+        {
+            <div class="float-left" style="margin-left: 15px; width: 230px; height: 155px; border: 1px solid gray; border-radius: 15px; margin-top: 15px;">
+                <h1>ZDJĘCIE PRZEDMOT</h1>
+                <b>@item.Brand @item.Model</b><br />
+                <span class="float-right" style="padding-right: 10px;">@item.Price.ToString("c0")</span>
+            </div>
+        }
+    </div>
+</div>
+<div style="float: left; margin-left: 85px; width: 1100px; height: 200px">
+    <hr style="border: 1px solid gray" />
+    <h4>Bestsellery</h4>
+    <!--Tutaj zaimplementować najlepiej sprzedające się rzeczy-->
+</div>
+<div style="float: left; margin-left: 85px; width: 1100px; height: 200px">
+    <hr style="border: 1px solid gray" />
+    <h4>Ostatnio oglądane</h4>
+    <!--Tutaj zaimplementować ostatnio przeglądane rzeczy przez użytkownika-->
+</div>

@@ -1,0 +1,80 @@
+﻿@model KomShop.Web.Entities.Users
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="row" style="width: 1100px; margin: auto; margin-top: 20px;">
+        <div class="col-2" style="margin-top: 60px">
+            <h6>Twoje dane</h6>
+            <h6>Twoje listy</h6>
+            <h6>Twoje zamówienia</h6>
+        </div>
+        <div class="rounded-pill" style="border: solid gray 1px; margin-top: 60px;"></div>
+        <div class="col-8">
+            <h1>Moje dane</h1>
+            <div>
+                @using (Html.BeginForm("ChangeAddressData", "Account", FormMethod.Post))
+                {
+                    @Html.Hidden("ID_User", Model.ID_User)
+                    <h4 style="font-weight: 400"><span class="fas fa-address-card"></span> Dane adresowe <span style="font-size: 18px; color: gray">(opcjonalne)</span></h4>
+                    <span class="form-inline">
+                        <span>@Html.LabelFor(m => m.Name, new { @style = "width: 200px" })</span>
+                        <span>@Html.TextBoxFor(m => m.Name, new { @class = "form-control rounded-pill", @style = "width: 450px; margin-top: 10px" })</span>
+                    </span>
+                    <span class="form-inline">
+                        <span>@Html.LabelFor(m => m.Surname, new { @style = "width: 200px;" })</span>
+                        <span>@Html.TextBoxFor(m => m.Surname, new { @class = "form-control rounded-pill", @style = "width: 450px; margin-top: 10px;" })</span>
+                    </span>
+                    <span class="form-inline">
+                        <span>@Html.LabelFor(m => m.Adress, new { @style = "width: 200px;" })</span>
+                        <span>@Html.TextBoxFor(m => m.Adress, new { @class = "form-control rounded-pill", @style = "width: 450px; margin-top: 10px;" })</span>
+                    </span>
+                    <span class="form-inline">
+                        <span>@Html.LabelFor(m => m.PostalCode, new { @style = "width: 200px;" })</span>
+                        <span>@Html.TextBoxFor(m => m.PostalCode, new { @class = "form-control rounded-pill", @style = "width: 100px; margin-top: 10px;" })</span>
+                        <span>@Html.LabelFor(m => m.City, new { @style = "width: 125px;" })</span>
+                        <span>@Html.TextBoxFor(m => m.City, new { @class = "form-control rounded-pill", @style = "width: 225px; margin-top: 10px;" })</span>
+                    </span>
+                    <span class="form-inline">
+                        <span>@Html.LabelFor(m => m.Phone, new { @style = "width: 200px;" })</span>
+                        <span>@Html.TextBoxFor(m => m.Phone, new { @class = "form-control rounded-pill", @style = "width: 450px; margin-top: 10px;" })</span>
+                    </span>
+                    <input type="submit" style="margin-top: 20px; margin-left: 200px; width: 300px; height: 50px" class="btn btn-primary rounded-pill" value="Zmień dane" />
+                    if (Model.ErrorMessage != null && Model.ErrorMessage.Contains("Pomyślnie"))
+                    {
+                        <span style="margin-left: 220px; color: green">@Html.ValueFor(m => m.ErrorMessage)</span>
+                    }
+                    else
+                    {
+                        <span style="margin-left: 220px; color: red">@Html.ValueFor(m => m.ErrorMessage)</span>
+                    }
+                }
+            </div>
+            <div>
+                @using (Html.BeginForm("ChangePassword", "Account", FormMethod.Post))
+                {
+                    @Html.Hidden("ID_User", Model.ID_User)
+                    <hr style="margin-top: 40px; margin-bottom: 40px" />
+                    <h4 style="font-weight: 400"><span class="fas fa-id-card-alt"></span> Dane konta</h4>
+                    <span class="form-inline">
+                        <span>@Html.LabelFor(m => m.Login, new { @style = "width: 200px" })</span>
+                        <span>@Html.TextBoxFor(m => m.Login, new { @class = "form-control rounded-pill", @style = "width: 450px; margin-top: 10px", @readonly = "true"})</span>
+                    </span>
+                    <span class="form-inline">
+                        <span>@Html.LabelFor(m => m.NewPassword, new { @style = "width: 200px" })</span>
+                        <span>@Html.TextBoxFor(m => m.NewPassword, new { @class = "form-control rounded-pill", @style = "width: 450px; margin-top: 10px", @type = "password" })</span>
+                        <span style="color: gray; font-size: 12px; margin-left: 200px">Im dłuższe będzie twoje nowe hasło, tym większe bezpieczeństwo.</span>
+                        @if (Model.LoginErrorMessage != null && Model.LoginErrorMessage.Contains("Hasło"))
+                        {
+                            <span style="margin-left: 220px; color: green">@Html.ValueFor(m => m.LoginErrorMessage)</span>
+                        }
+                        else
+                        {
+                            <span style="margin-left: 220px; color: red">@Html.ValueFor(m => m.LoginErrorMessage)</span>
+                        }
+                    </span>
+                    <input type="submit" style="margin-top: 20px; margin-left: 200px; width: 300px; height: 50px" class="btn btn-primary rounded-pill" value="Zmień hasło" />
+                }
+            </div>
+        </div>
+        </div>

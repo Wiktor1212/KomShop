@@ -1,0 +1,130 @@
+﻿@{ 
+    KomShop.Web.Entities.Cart cart = (KomShop.Web.Entities.Cart)Session["cart"];
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <script src="~/Scripts/jquery-3.0.0.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <link rel="stylesheet" href="~/Content/Glyphicons.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-theme.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-grid.css" />
+    <link rel="stylesheet" href="~/Content/fontawesome.css" />
+    <link rel="stylesheet" href="~/Content/all.css" />
+    <style>
+        a {
+            color: black;
+            margin-left: 10px;
+        }
+
+            a:hover {
+                text-decoration: none;
+                color: black;
+                transform: scale(1.05)
+            }
+    </style>
+</head>
+<body>
+    <div class="navbar bg-dark shadow-lg">
+        <div class="form-inline" style="width: 1280px; margin: auto">
+            <a class="navbar-brand" href="/"><h1 style="color: white">Kom-shop</h1></a>
+            <form class="form-inline my-2 my-lg-0" style="padding-left: 150px;">
+                <input class="form-control col-8 rounded-pill" type="search" placeholder="Czego szukasz?" aria-label="Search" />
+                <button class="btn btn-outline-info my-2 my-sm-0  rounded-pill" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+            </form>
+            <div class="float-left" style="padding-left: 55px; width: 600px;">
+
+                <a href="/Favourite">
+                    <span style="float: left;  text-align: center; margin-top: 5px; color: white; font-size: 30px;" class="far fa-heart">
+                        <h6 style="margin-bottom: auto; text-align: right">Ulubione</h6>
+                    </span>
+                    
+                </a>
+                <a href="/Cart" style="float: left; color: white; margin-left: 80px;  margin-top: 12px; font-weight: 500; font-size: 23px">
+                    <span>
+                        <span class="glyphicon glyphicon-shopping-cart"></span>
+                        @if (Session["cart"] != null)
+                        {
+                            @cart.ComputeTotalValue().ToString("c")
+                        }
+                        else
+                        {
+                            <span>Pusty</span>
+                        }
+                    </span>
+                </a>
+                @if (Session["UserLogin"] != null)
+                {
+                    <div style="float: right">
+                        @Html.ActionLink(string.Format("Witaj, {0}", Session["UserLogin"].ToString()), "Index", "Account",null, new { @style= "color:white; font-size: 20px; float:left; margin-right: auto; margin-top: 13px" })
+                        @Html.ActionLink("Wyloguj", "Logout", "Login", null, new { @style = "margin-top: 10px;", @type = "button", @class = "btn btn-outline-info rounded-pill" })
+                    </div>
+                    
+                }
+                else
+                {
+                    <div style="float: right;">
+                        <span style="color:white; font-size: 18px; float:left; margin-right: auto">Jesteś nie <br />zalogowany</span>
+                        @Html.ActionLink(" Zaloguj ", "Index", "Login", null, new { @style = "margin-top: 7px; margin-right: auto;", @type = "button", @class = "btn btn-outline-success rounded-pill" })
+                    </div>
+                    
+                }
+
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-light" style="background-color: #e3e3e3;">
+        <div style="width: 1280px; margin: auto">
+            <a href="#">
+                Laptopy i tablety
+            </a>
+            <a href="#">
+                Telefony i GPS
+            </a>
+            <a href="#">
+                Komputery stacjonarne
+            </a>
+            @Html.ActionLink("Podzespoły komputerowe", "ShowCategories", "Category",
+                             new { section = "Podzespoły komputerowe" }, null)
+            @Html.ActionLink("Urządzenia peryferyjne", "ShowCategories", "Category",
+                             new { section = "Urządzenia peryferyjne" }, null)
+            <a href="#">
+                Gaming
+            </a>
+            <a href="#">
+                Foto, TV i audio
+            </a>
+            <a href="#">
+                Oprogramowanie
+            </a>
+            <a href="#">
+                Akcesoria
+            </a>
+        </div>
+    </div>
+    <div style="width: 1280px; margin: auto;">
+        @RenderBody()
+        <div class="row" id="footer" style="margin: auto; width: 1100px; padding-bottom: 50px;">
+            <div class="card card-body col-5 rounded-pill border-dark" style="margin-top:60px; padding-right:5px; background-color: #f2f2f2; padding-left: 30px;">
+                <h3>Skontaktuj się z nami</h3>
+                <span><b>Zadzwoń</b> do nas pod numer: <b>000-000-000</b></span>
+                <span><b>Napisz</b> na adres: <b>example@ex.com</b></span>
+                <span style="font-weight: 500">Będziemy szczęśliwi mogąc ci pomóc.</span>
+            </div>
+            <div class="card card-body col-6 rounded-pill border-dark" style="margin-top: 60px; background-color: #f2f2f2; padding-left: 30px; margin-left: 65px">
+                <h3>Zapisz się do newslettera</h3>
+                <span class="form-inline">
+                    @Html.TextBox("newsletter", null, new { @class = "form-control rounded-pill", @placeholder = "Wpisz swój e-mail", @style = "width: 250px" })
+                    @Html.ActionLink("Zapisz się!", "SignIn", "Newsletter", new { @class = "btn btn-outline-success rounded-pill", @style = "margin-left: 25px;width: 100px;" })
+                </span>
+                <span style="font-weight: 500">Zapisanie się do naszego newslettera zagwarantuje ci powiadomienia o wszystkin nowych promocjach!</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+﻿@model KomShop.Web.Models.GPUModel
+
+@{
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        Url = "FiltrGPU",
+        UpdateTargetId = "items"
+    };
+}
+<script>
+    function setsort() {
+        $("#sub").click();
+    }
+</script>
+@using (Ajax.BeginForm(null, null, ajaxOpts, new { @class = "form-group row", @style = "margin-left: 5px" }))
+{
+    <h5>Cena:</h5>
+    <span class="form-inline" style="font-size: 16px; font-weight: 500; padding-bottom: 10px;">
+        Od: @Html.TextBoxFor(m => m.pricemin, new { @class = "form-control col-sm-4", @style = "margin-left: 10px; text-align: right", @Value = "" })
+        <b style="margin-left: 15px"></b>do: @Html.TextBoxFor(m => m.pricemax, new { @class = "form-control col-sm-4", @style = "margin-left: 10px; text-align: right", @Value = "" })
+    </span>
+    <h5 style="margin-top: 5px">Producent</h5>
+    @Html.DropDownList("producent", Model.Producent.AsEnumerable(), "Proszę wybrać", new { @class = "form-control col-sm-6", @style = "margin-left: 40px;" })
+    <h5 style="margin-top: 14px;">Układ:</h5>
+    @Html.DropDownList("model", Model.Model.AsEnumerable(), "Proszę wybrać", new { @class = "form-control col-sm-6", @style = "margin-left: auto; margin-right: 13px; margin-top: 10px" })
+    <h5 style="margin-top: 15px">Rodzaj pamięci: </h5>
+    @Html.DropDownList("memorytype", Model.MemoryType.AsEnumerable(), "Proszę wybrać", new { @class = "form-control col-sm-5", @style = "margin-left: 18px; margin-top: 10px" })
+    <h5 style="margin-top: 15px;">Wielkość pamięci: </h5>
+    @Html.DropDownList("memorysize", Model.MemorySize.AsEnumerable(), "Proszę wybrać", new { @class = "form-control col-sm-4", @style = "margin-left: 22px; margin-top: 10px;" })
+    <button class="btn btn-secondary" style="margin-left: 35px; margin-top: 15px;" type="reset"><span style="margin-right: 5px; margin-top: 5px;" class="glyphicon glyphicon-repeat"></span>Resetuj</button>
+    <button class="btn btn-success" style="margin-left: 60px; margin-top: 15px;" onclick="setsort()" type="submit"><span style="margin-right: 5px; margin-top: 5px;" class="glyphicon glyphicon-search"></span>Filtruj</button>
+    <input type="submit" style="display: none" id="sub2" />
+}
