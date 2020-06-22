@@ -9,6 +9,7 @@ using KomShop.Web.Abstract;
 using KomShop.Web.Entities;
 using KomShop.Web.Data;
 using KomShop.Web.Models;
+using System.Web.UI.WebControls;
 
 namespace KomShop.Web.Infrastructure
 {
@@ -32,19 +33,13 @@ namespace KomShop.Web.Infrastructure
         public void AddBindings()
         {
             //Tu umieść powiązania
-            kernel.Bind<IProcessorRepository>().To<EfProcessorContext>();
+            kernel.Bind<IProcessorRepository>().To<EfCPUContext>();
             kernel.Bind<IGPURepository>().To<EfGPUContext>();
             kernel.Bind<IUserRepository>().To<EfUserContext>();
-            kernel.Bind<IProductRepository>().To<EfProductContext>();
+            kernel.Bind<IProductRepository>().To<ProductContext>();
             kernel.Bind<IOrderDetailsRepository>().To<EfOrderDetailsContext>();
-            Mock<IPODRepository> mock = new Mock<IPODRepository>();
-            mock.Setup(x => x.PoDs).Returns(new List<PoD>
-            {
-                new PoD{ Brand = "Asus", Model = "RTX 2080 SUPER", Description = "Zgarnij tę kartę w promocyjnej cenie już teraz!", DurationTime=3600, Price= 3190.00m},
-                new PoD{ Brand = "MSI", Model = "Z390 GAMING PLUS", Description = "Teraz możesz poczuć prawdziwą moc w niskiej cenie!", DurationTime=3600, Price= 590.00m}
-            });
-
-            kernel.Bind<IPODRepository>().ToConstant(mock.Object);
+            kernel.Bind<IOrdersRepository>().To<EfOrderContext>();
+            kernel.Bind<IDeliveryRepository>().To<EfDeliveryContext>();
         }
     }
 }

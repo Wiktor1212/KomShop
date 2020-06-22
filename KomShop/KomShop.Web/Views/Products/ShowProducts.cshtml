@@ -5,14 +5,23 @@
             Url = (string)ViewBag.Filter,
             UpdateTargetId = "items"
         };
+    ViewBag.Title = ViewBag.Category;
 }
     <script>
-        function SubmitForm() {
+        function wait(ms) {
+            var d = new Date();
+            var d2 = null;
+            do { d2 = new Date(); }
+            while (d2 - d < ms);
+        }
+        function Submit() {
             $("#sub").click();
             $("#sub2").click();
         }
+        
     </script>
 <div id="sidemenu" style="margin-top: 25px; margin-left: 35px; font-size: 14px; font-weight: 500">
+    <!--Nawigacja.-->
     @if (ViewBag.SubCategory != null)
     {
         @Html.Action("NavigationHistory", new { Section = ViewBag.Section, Category = ViewBag.Category, SubCategory = ViewBag.SubCategory });
@@ -24,29 +33,31 @@
 </div>
 <div class="row" style="margin-top: 15px; margin-left: 35px;">
     <div class="card-body bg-light rounded shadow col-sm-3" style="text-align: left; height: 550px;">
-        <h3>Podkategorie</h3>
-        @Html.Action("SubCategories", new { category = ViewBag.Category, subcategory = ViewBag.SubCategory }) <br />
-        <h3>Filtry</h3>
-        @Html.Action("Filtres")
+        <!--Filtry i podkategorie.-->
+        @Html.Action("FiltresAndSubcategories", new { category = ViewBag.Category })
     </div>
     <div class="col-sm-9 row">
         <div class="form-inline" style="width: 850px;">
             <h4 style="font-weight: 600; margin-left: 35px">Wyniki dla: @ViewBag.Category</h4>
-            @using (Ajax.BeginForm(null, null, ajaxOpts, new { @class = "from-inline", @style="position: absolute; right: 85px", @id = "form0" }))
-            {
+            <div class="from-inline" style="position: absolute; right: 85px">
                 <span style="margin-right: 25px; font-weight: 500; font-size: 20px">Sortowanie: </span>
-                @Html.DropDownList("SortType", new List<SelectListItem> {
-                new SelectListItem { Text="Domyślnie"},
-                new SelectListItem {Text = "Cena: od najdroższych"},
-                new SelectListItem {Text = "Cena: od najtańszych"},
-                new SelectListItem{Text="Nazwa A-Z"},
-                new SelectListItem {Text = "Nazwa Z-A"}
-                }, new { @class = "form-control rounded-pill", @onchange = "SubmitForm()" })
-                <input style="display: none" type="submit" id="sub" />
-            }
+                <!--Sortowanie produktów.-->
+                @using (Ajax.BeginForm("SignSorting", new AjaxOptions { Url=Url.Action("SignSorting")}))
+                {
+                    @Html.DropDownList("sorting", new List<SelectListItem> {
+                        new SelectListItem { Text="Domyślnie"},
+                        new SelectListItem {Text = "Cena - malejąco"},
+                        new SelectListItem {Text = "Cena - rosnąco"},
+                        new SelectListItem {Text="Nazwa A-Z"},
+                        new SelectListItem {Text = "Popularność - największa"},
+                        new SelectListItem {Text = "Popularność - najmniejsza"}
+                    }, new { @id = "sort", @class = "form-control rounded-pill", @onchange = "Submit()" })
+                    <input style = "display: none" type = "submit" id = "sub" />
+                }
+            </div>
         </div>
         <div id="items" class="card-body " style="margin-left: 25px;">
-            @Html.Action((string)ViewBag.Filter)
+            @Html.Action("Filtr", new { category = (string)ViewBag.Category })
         </div>
     </div>
     

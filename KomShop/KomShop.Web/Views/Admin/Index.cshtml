@@ -1,0 +1,43 @@
+﻿@{
+    Layout = "~/Views/Shared/_ModLayout.cshtml";
+    ViewBag.Title = "Panel moderatora";
+}
+<style>
+    .link{
+        text-decoration: none;
+        margin-bottom: 25px;
+    }
+    a{
+        color: black;
+    }
+    a:hover{
+        color: black;
+        text-decoration: none;
+        transform: scale(1.025);
+    }
+    .border{
+        border-radius: 25px;
+    }
+</style>
+<h1 style="margin-left: 20px; margin-top: 30px;">Co chcesz zrobić?</h1>
+<div class="row row-cols-3" style="width: 1250px; margin: auto; margin-top: 20px;">
+    <a class="link" href="@Url.Action("ChooseCategory")">
+        <div style="width: 400px; height: 150px; text-align: center" class="border">
+            <h1>Dodaj produkt</h1>
+            <span>Przekieruje cię do strony w której będziesz mógł wybrać kategorię z danego działu dla której chcesz dodać produkt.</span>
+        </div>
+    </a>
+    <a class="link" href="@Url.Action("ShowProducts")">
+        <div style="width: 400px; height: 150px; text-align: center" class="border">
+            <h1>Edytuj produkt</h1>
+            <span>Przekieruje cię do strony na której możesz wybrać produkt do edycji. Produkty możesz przefiltrować oraz posortować aby łatwiej je odnaleźć</span>
+        </div>
+    </a>
+    <a class="link" href="@Url.Action("PromotedProducts")">
+        <div style="width: 400px; height: 150px; text-align: center" class="border">
+            <h1>Polecane przez stronę</h1>
+            <span>Lista produktów które są promowane przez stronę. Możesz je dodawać lub usuwać.</span>
+        </div>
+    </a>
+</div>
+

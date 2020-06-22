@@ -10,72 +10,72 @@ namespace KomShop.Web.Controllers
 {
     public class LoginController : Controller
     {
-        private IUserRepository users;
+        private IUserRepository users;  //Repozytorium użytkowników.
         public LoginController(IUserRepository userRepository)
         {
             users = userRepository;
         }
-        public ActionResult Index()
+        public ViewResult Index() //Strona główna logowania.
         {
-            Users userModel = new Users();
-            return View(userModel);
+            User userModel = new User();  //Nowy użytkownik.
+            return View(userModel); //Wygenerowanie widoku z przekazaniem modelu.
         }
         [HttpPost]
-        public ActionResult Index(Users userModel)
+        public ActionResult Index(User userModel)  //Sprawdza poprawność wprowadzonych danych.
         {
-            if(userModel.Login != null && userModel.Password != null)
+            if(userModel.Login != null && userModel.Password != null)   //Jeżeli wpisano obie wartości.
             {
-                Users userDetails = users.Users.Where(x => x.Login == userModel.Login && x.Password == userModel.Password).FirstOrDefault();
-                if (userDetails == null)
+                User userDetails = users.Users.Where(x => x.Login == userModel.Login && x.Password == userModel.Password).FirstOrDefault();    //Wyszukuje użytkownika o podanym loginie i haśle.
+                if (userDetails == null)    //Jeżeli nie wyszuka takiego użytkownika.
                 {
-                    userModel.LoginErrorMessage = "Zły login lub hasło.";
-                    return View(userModel);
+                    userModel.LoginErrorMessage = "Zły login lub hasło.";   //Feedback.
+                    return View(userModel); //Wygenerowanie widoku z przekazaniem modelu.
                 }
-                else
+                else    //Jeżeli znaleziono użytkownika.
                 {
-                    Session["ID_User"] = userDetails.ID_User;
-                    Session["UserLogin"] = userDetails.Login;
-                    return RedirectToAction("Index", "Home");
+                    Session["ID_User"] = userDetails.User_ID;   //Przypisanie wartości
+                    Session["UserLogin"] = userDetails.Login;   // do danych sesji.
+                    return RedirectToAction("Index", "Home");   //Przekierowanie do strony głównej.
                 }
             }
             else
             {
-                return View(userModel);
+                return View(userModel); //Wygenerowanie widoku z przekazaniem modelu.
             }
         }
-        public ActionResult Logout()
+        public RedirectToRouteResult Logout()    //Wylogowanie bez niszczenia koszyka.
         {
-            Session["ID_user"] = null;
-            Session["UserLogin"] = null;
-            return RedirectToAction("Index", "Home");
+            Session["ID_user"] = null;      //Usunięcie danych
+            Session["UserLogin"] = null;    //zalogowanego użytkownika.
+            return RedirectToAction("Index", "Home");   //Przekierowanie do strony głównej.
         }
-        public ActionResult Register()
+        public ViewResult Register()  //Strona główna rejestracji.
         {
-            Users userModel = new Users();
-            return View(userModel);
+            User userModel = new User();  //Stworzenie nowego użytkownika.
+            return View(userModel); //Wygenerowanie widoku z przekazaniem modelu.
         }
         [HttpPost]
-        public ActionResult Register(Users userModel)
+        public ActionResult Register(User userModel)   //Sprawdza poprawność danych.
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)     //Jeżeli wszystkie wartości zostały uzupełnione.
             {
-                Users userDetails = users.Users.Where(u => u.Login == userModel.Login).FirstOrDefault();
-                if(userDetails ==  null)
+                User userDetails = users.Users.Where(u => u.Login == userModel.Login).FirstOrDefault();    //Sprawdza czy użytkownik o takim samym loginie istnieje.
+                if(userDetails ==  null)    //Jeżeli nie istnieje.
                 {
-                users.Register(userModel);
-                TempData["data"] = string.Format("Rejestracja powiodła się, teraz możesz się zalogować {0}", userModel.Login);
-                ModelState.Clear();
-                return RedirectToAction("Index");
+                users.Register(userModel);  //Zarejestruj nowego użytkownika.
+                TempData["data"] = string.Format("Rejestracja powiodła się, teraz możesz się zalogować {0}", userModel.Login);  //Feedback.
+                ModelState.Clear(); //Usuwa błędy ModelState.
+                return RedirectToAction("Index");   //Przekierowuje użytkownika do strony logowania.
                 }
-                else
+                else    //Jeżeli taki użytkownik istnieje
                 {
-                    userModel.LoginErrorMessage = "Użytkownik z taką nazwą już istnieje.";
-                    return View(userModel);
+                    userModel.LoginErrorMessage = "Użytkownik z taką nazwą już istnieje.";  //Feedback.
+                    return View(userModel); //Wygenerowanie widoku rejestracji z przekazaniem modelu.
                 }
             }
-            else
+            else    //Jeżeli nie wszystkie wartości zostały uzupełnione.
             {
-                return View(userModel);
+                return View(userModel); //Wygenerowanie widoku rejestracji z przekazaniem modelu.
             }
         }
     }

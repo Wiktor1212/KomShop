@@ -1,55 +1,50 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Data.Entity.Core.Metadata.Edm;
-using System.Data.Entity.Migrations.Model;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Web;
-using Castle.Components.DictionaryAdapter.Xml;
 using KomShop.Web.Abstract;
-using KomShop.Web.Entities;
+using KomShop.Web.Data;
 
 namespace KomShop.Web.Entities
 {
     public class Cart
     {
-        private CartLine lineCollection = new CartLine();
+        private List<Product> lineCollection = new List<Product>();
+        public IProductRepository productRepository = new ProductContext();
 
-        public void AddItem(int productId, int quantity, decimal price, string title=null)
+        public void AddItem(int productId, int quantity)    //Dodaje przedmiot do koszyka.
         {
-            Item product = lineCollection.items.Where(p => p.ProductID == productId).FirstOrDefault();
-            if(product == null)
+            Product product = productRepository.items.FirstOrDefault(x => x.ProductID == productId); //Wyszukuje produktu w repozytorium.
+            Product id = lineCollection.FirstOrDefault(x => x.ProductID == productId);
+            if (lineCollection.FirstOrDefault(x => x.ProductID == productId) == null) //Jeżeli nie wyszukało produktu.
             {
-                lineCollection.items.Add(new Item { ProductID = productId, Title = title, Price = price, Quantity = quantity });
+                lineCollection.Add(new Product { ProductID = productId, Title = product.Title, Price = product.Price, Quantity = quantity, Category = product.Category });  //Dodaje nowy produkt do koszyka.
             }
-            else
+            else    //Jeżeli wyszukało produkt.
             {
-                lineCollection.items
+                lineCollection
                 .Where(p => p.ProductID == productId)
                 .FirstOrDefault()
-                .Quantity += quantity;
+                .Quantity += quantity;  //Zwiększa ilość produktu.
             }
         }
-        public void RemoveItem(int productId)
+        public void RemoveItem(int productId)   //Usuwa produkt.
         {   
-            lineCollection.items.RemoveAll(p => p.ProductID == productId);
+            lineCollection.RemoveAll(p => p.ProductID == productId);
         }
-        public decimal ComputeTotalValue()
+        public decimal ComputeTotalValue()  //Oblicza łączną wartość zamówienia.
         {
-            return lineCollection.items.Sum(p => p.Price * p.Quantity);
+            return lineCollection.Sum(p => p.Price * p.Quantity);
         }
-        public void Clear()
+        public void ChangeQuantity(int product_Id, int quantity)    //Zmienia ilość przedmiotu.
         {
-            lineCollection = new CartLine();
+            lineCollection.FirstOrDefault(x => x.ProductID == product_Id).Quantity = quantity;
         }
-        public CartLine Lines
+        public void Clear() //Czyści koszyk.
+        {
+            lineCollection = new List<Product>();
+        }
+        public List<Product> Products   //Zwraca produkty w koszyku.
         {
             get { return lineCollection; }
         }
-    }
-    public class CartLine
-    {
-        public List<Item> items = new List<Item>();
     }
 }

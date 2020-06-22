@@ -9,7 +9,7 @@ namespace KomShop.Web.Models
 {
     public class ShowItemModel
     {
-        public List<Item> Product { get; set; }
+        public List<Product> Product { get; set; }
         public List<string> DetailsInfo { get; set; }
         public List<string> Units { get; set; }
     }

@@ -1,0 +1,56 @@
+﻿@model List<KomShop.Web.Entities.Product>
+@{
+    Layout = "~/Views/Shared/_ModLayout.cshtml";
+}
+    <script>
+        $(function () {
+            $("#searchingTerm").autocomplete({
+                source: '@Url.Action("GetTitles")'
+            });
+        });
+    </script>
+<div class="row" style="margin: auto; margin-top: 20px;">
+    <div class="card card-body col-3">
+        <h4>Dodaj nowy produkt</h4>
+        <span style="color: gray; font-size: 12px">Przed dodaniem upewnij się, że w liście jest mniej niż 12 produktów.</span><br />
+        <h5>Wyszukaj produkt</h5>
+        @using (Html.BeginForm("AddPromotion", "Moderator"))
+        {
+            @Html.TextBox("searchTerm", null, new { id = "searchingTerm", @class = "form-control rounded-pill", @style = "width: 285px;" })
+            if (TempData["message"] != null && TempData["message"].ToString().Contains("błąd"))
+            {
+                <span style="color: red; ">@TempData["message"]</span>
+            }
+            else if(TempData["message"] != null)
+            {
+                <span style="color: green; padding-left: 80px">@TempData["message"]</span>
+            }
+            <input class="btn btn-outline-success rounded-pill" type="submit" style="width: 250px; height: 35px; margin-left: 15px; margin-top: 10px;" value="Potwierdź">
+        }
+
+    </div>
+    <div class="card card-body col-8" style="margin-left: 20px">
+        <h4>Promowane produkty</h4>
+        <table border="1">
+            <thead>
+                <tr style="text-align:center">
+                    <td>L.p.</td>
+                    <td width="600px">Tytuł</td>
+                    <td width="100px">Cena</td>
+                    <td width="175px">Akcja</td>
+                </tr>
+            </thead>
+            <tbody>
+                @for(int i = 0; i < Model.Count(); i++)
+                {
+                    <tr>
+                        <td>@((i + 1).ToString())</td>
+                        <td>@Model[i].Title</td>
+                        <td style="text-align: right">@Model[i].Price.ToString("c")</td>
+                        <td style="text-align: center"><a href="@Url.Action("RemovePromotion", new { productId = Model[i].ProductID })"><span class="fas fa-minus" style="margin-right: 10px;"></span><span>Usuń</span></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

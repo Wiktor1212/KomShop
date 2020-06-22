@@ -9,7 +9,7 @@ namespace KomShop.Web.Abstract
 {
     public interface IOrderDetailsRepository
     {
-        IEnumerable<OrderDetails> OrderDetails { get; }
-        void AddOrderDetail(OrderDetails orderDetails);
+        IEnumerable<OrderDetails> OrderDetails { get; } //Zwraca szczegóły zamówień.
+        void AddOrderDetail(OrderDetails orderDetails); //Dodaje szczegół zamówienia do bazy.
     }
 }

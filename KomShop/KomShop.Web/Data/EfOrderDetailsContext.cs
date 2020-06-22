@@ -12,14 +12,14 @@ namespace KomShop.Web.Data
     {
         private EfDbContext context = new EfDbContext();
 
-        public IEnumerable<OrderDetails> OrderDetails
+        public IEnumerable<OrderDetails> OrderDetails   //Zwraca repozytorium szczegołów zamówień.
         {
             get
             {
-                return context.OrderDetails.Include(x => x.Order).Include(x => x.GPU).Include(x => x.Processor);
+                return context.OrderDetails.Include(x => x.GPU).Include(x => x.Processor).Include(x => x.Order);
             }
         }
-        public void AddOrderDetail(OrderDetails orderDetails)
+        public void AddOrderDetail(OrderDetails orderDetails)   //Dodaje szczegół zamówienia do bazy.
         {
             context.OrderDetails.Add(orderDetails);
             context.SaveChanges();

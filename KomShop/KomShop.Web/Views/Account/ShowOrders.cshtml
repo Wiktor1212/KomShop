@@ -1,0 +1,41 @@
+﻿@model List<KomShop.Web.Models.ShowOrderModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Twoje zamówienia";
+}
+    <div class="row" style="width: 1100px; margin: auto; margin-top: 20px;">
+        <div class="col-2" style="margin-top: 60px">
+            <h6>@Html.ActionLink("Twoje dane", "Index")</h6>
+            <h6>@Html.ActionLink("Twoje zamówienia", "ShowOrders")</h6>
+        </div>
+        <div class="rounded-pill" style="border: solid gray 1px; margin-top: 60px;"></div>
+        <div class="col-9">
+            <h1><span class="fas fa-th-list" style="margin-right: 15px"></span>Zamówienia</h1>
+            <table class="col-12">
+                <thead>
+                    <!--Nagłówek tabeli-->
+                    <tr style="border-bottom: 2px solid #ebebeb">
+                        <td>Numer zamówienia</td>
+                        <td>Data złożenia</td>
+                        <td>Status</td>
+                        <td>Dostawa i płatność</td>
+                        <td>Wartość</td>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--Zamówienia użytkownika-->
+                    @foreach(KomShop.Web.Models.ShowOrderModel item in Model)
+                    {
+                        <tr style="border-bottom: 1px solid #ebebeb">
+                            <td>@Html.ActionLink(item.Order_ID.ToString(), "ShowOrderDetails", new { id = item.Order_ID })</td>
+                            <td>@item.Date.ToShortDateString()</td>
+                            <td>@item.Status</td>
+                            <td>dostawa kurierem - pobranie</td>
+                            <td>@item.Price.ToString("c")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>

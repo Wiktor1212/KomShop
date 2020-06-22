@@ -1,42 +1,18 @@
-﻿@model KomShop.Web.Models.CartViewModel
+﻿@model string
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Kom-shop twój koszyk";
 }
-<div class="row" style="margin-top: 20px;">
-    <div class="col-7" style="width: 700px; margin-left: 50px;">
-        <h2>Twój koszyk</h2>
-        @foreach (var line in Model.Cart.Lines.items)
-        {
-            <div class="card card-body" style="margin-top:25px;">
-                <span style=" font-weight: 500; font-size: 16px">
-                    <span>@line.Title</span>
-                    <span style="float: right">@line.Quantity sztuk</span>
-                    <span style="float: right; margin-right: 10px">@line.Price.ToString("c")</span>
-                </span>
-            </div>
-        }
+@if(TempData["message"] != null)
+{
+    <div class="alert alert-warning" style="margin: auto; width: 1175px;">
+        <span class="fas fa-info-circle" style="margin-left: 10px; margin-top: 7px; margin-right: 10px;"></span><span style="margin-bottom: auto">@TempData["message"]</span>
     </div>
-    <div class="col-4">
-        <div class="card">
-            <div class="card-header">
-                <h5>Podsumowanie zamówienia</h5>
-            </div>
-            <div class="card-body rounded-top">
-                <span style="font-weight: 500; font-size: 16px;">
-                    <span style="float: left;">Łączna kwota</span>
-                    <span style="float: right">@Model.Cart.ComputeTotalValue().ToString("c")</span>
-                </span>
-                @Html.ActionLink("Przejdź do dostawy", "FinalizeOrder", "Orders", new { @style = "margin-top: 15px; width: 365px;", @class = "btn btn-outline-success rounded-pill" })
-                <span style="color: gray; font-size: 14px; margin-top: 100px;">
-                    Dokończ składanie zamówienia - dodanie produktów do koszyka nie oznacza ich rezerwacji.
-                </span>
-            </div>
-        </div>
-        
-    </div>
-</div>
+}
 
+<div id="details">
+    @Html.Action("Details")
+</div>
 <div class="text-left" style="margin-left: 40px; margin-top: 40px;">
-    <a class="btn btn-secondary" href="@Model.ReturnUrl">Powrót</a>
+    <a class="btn btn-secondary" href="@Model">Powrót</a>
 </div>

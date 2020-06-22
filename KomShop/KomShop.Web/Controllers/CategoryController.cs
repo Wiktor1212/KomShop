@@ -1,22 +1,18 @@
 ﻿using KomShop.Web.Models;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace KomShop.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        private List<string> MenuCategories;
-        private CatMenuModel MenuModel;
-        private List<CategoryModel> categoryModels;
-        private Icons icons = new Icons();
-        public ActionResult ShowCategories(string section)      //Kafelki z kategoriami
+        private List<CategoryModel> categoryModels = new List<CategoryModel>(); //Model dla kategorii.
+        public CategoryDetails CatDetails = new CategoryDetails();   //Klasa z kategoriami.
+        public ActionResult ShowCategories(string section)      //Kategorie dla danego działu.
         {
-            switch (section)
+            switch (section)    //W zależności od działu
             {
                 /*case "LiT":
 
@@ -28,30 +24,28 @@ namespace KomShop.Web.Controllers
 
                     break;*/
                 case "Podzespoły komputerowe":
-                    categoryModels = new List<CategoryModel>();
-                    for(int i = 0; i< icons.PodzIcons.Count(); i++)
+                    for(int i = 0; i< CatDetails.Podzespoly.Count(); i++) //Dla każdej kategorii w dziale.
                     {
-                        categoryModels.Add(new CategoryModel
+                        categoryModels.Add(new CategoryModel        //Dodaj do modelu.
                         {
-                            CategoryName = icons.Podzespoly[i].Replace("_", " "),
-                            clas = icons.PodzIcons[i].ToString()
-                        }); ;
+                            CategoryName = CatDetails.Podzespoly[i],   //Nazwa kategorii.
+                            clas = CatDetails.PodzIcons[i].ToString()  //Ikona kategorii.
+                        });
                     }
+                    ViewBag.Section = section;  //Dane ViewBag działu.
+                    return View("Categories", categoryModels);  //Wygenerowanie widoku z przekazaniem modelu.
 
-                    ViewBag.Section = section;
-                    return View("Categories", categoryModels);
                 case "Urządzenia peryferyjne":
-                    categoryModels = new List<CategoryModel>();
-                    for (int i = 0; i < icons.PodzIcons.Count(); i++)
+                    for (int i = 0; i < CatDetails.Peryferia.Count(); i++)//Dla każdej kategorii w dziale.
                     {
-                        categoryModels.Add(new CategoryModel
+                        categoryModels.Add(new CategoryModel    //Dodaj do modelu.
                         {
-                            CategoryName = icons.Peryferia[i].Replace("_", " "),
-                            clas = icons.PerIcons[i].ToString()
-                        }); ;
+                            CategoryName = CatDetails.Peryferia[i], //Nazwa kategorii.
+                            clas = CatDetails.PerIcons[i].ToString() //Ikona kategorii.
+                        });
                     }
-                    ViewBag.Section = section;
-                    return View("Categories", categoryModels);
+                    ViewBag.Section = section;  //Dane ViewBag działu.
+                    return View("Categories", categoryModels);  //Wygenerowanie widoku z przekazaniem modelu.
                 /*case "Strefa Gracza":
 
                     break;
@@ -65,53 +59,37 @@ namespace KomShop.Web.Controllers
 
                     break;*/
                 default:
-                    return View("Index");
+                    return RedirectToAction("Index", "Home");   //Przekierowanie do strony główniej.
             }
         }
         public PartialViewResult NavigationHistory(string Section, string Category = null, string SubCategory = null) //Historia nawigacji
         {
-            NavigationHistoryModel model = new NavigationHistoryModel
+            NavigationHistoryModel model = new NavigationHistoryModel   //Tworzenie nowego modelu nawigacji poprzez przypisanie zmiennych.
             {
                 Section = Section,
                 Category = Category ?? null,
                 SubCategory = SubCategory ?? null
             };
-            return PartialView(model);
+            return PartialView(model);  //Wygenetowanie widoku częściowego z przekazaniem modelu.
         }
-        public PartialViewResult CartMenu(string section)   //Poboczne menu nawigacji
+        public PartialViewResult CatMenu(string section)   //Poboczne menu nawigacji.
         {
+            List<string> Categories = new List<string>();    //Model dla częściowego widoku z działami i kategoriami.
             switch (section)
             {
-                case "Podzespoły komputerowe":      //Lista kategorii Podzespoly
+                case "Podzespoły komputerowe":      //Lista kategorii dla działu Podzespoly.
 
-                    MenuCategories = new List<string>();
-                    foreach (var item in icons.Podzespoly)
-                    {
-                        MenuCategories.Add(item.ToString().Replace("_", " "));
-                    }
+                    Categories = CatDetails.Podzespoly;  //Przypisz listę nazw kategorii.
+                    ViewBag.Section = section;  //Przypisz do ViewBag nazwę działu.
+                    return PartialView(Categories);  //Wygeneruj widok i przekarz model.
 
-                    MenuModel = new CatMenuModel
-                    {
-                        Categories = MenuCategories
-                    };
+                case "Urządzenia peryferyjne":      //Lista kategorii dla działu Peryferia.
+                    Categories = CatDetails.Peryferia; //Przypisz listę nazw kategorii.
+                    ViewBag.Section = section;  //Przypisz do ViewBag nazwę działu.
+                    return PartialView(Categories);  //Wygeneruj widok i przekarz model.
 
-                    ViewBag.Section = section;
-                    return PartialView(MenuModel);
-                case "Urządzenia peryferyjne":      //Lista kategorii Peryferia
-                    MenuCategories = new List<string>();
-                    foreach (var item in icons.Peryferia)
-                    {
-                        MenuCategories.Add(item.ToString().Replace("_", " "));
-                    }
-
-                    MenuModel = new CatMenuModel
-                    {
-                        Categories = MenuCategories
-                    };
-                    ViewBag.Section = section;
-                    return PartialView(MenuModel);
                 default:
-                    return PartialView();
+                    return PartialView();   //Zwróć pusty widok.
             }
         }
     }

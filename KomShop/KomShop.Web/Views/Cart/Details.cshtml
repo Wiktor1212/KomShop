@@ -1,0 +1,84 @@
+﻿@model KomShop.Web.Entities.Cart
+@{ 
+    List<SelectListItem> list = new List<SelectListItem>
+    {
+        new SelectListItem{Text = "1"},
+        new SelectListItem{Text = "2"},
+        new SelectListItem{Text = "3"},
+        new SelectListItem{Text = "4"},
+        new SelectListItem{Text = "5"}
+    };
+}
+<script>
+    function Change(id) {
+        $("#"+id).click();
+    }
+</script>
+<div class="row" style="margin-top: 20px;">
+    <div class="col-7" style="width: 700px; margin-left: 50px;">
+        <h2>Twój koszyk</h2>
+        @if(Model.Products.Count() == 0)
+        {
+            <h3>Brak przedmiotów w koszyku.</h3>
+        }
+        @foreach (var line in Model.Products)
+        {
+            list.FirstOrDefault(x => x.Text == line.Quantity.ToString()).Selected = true;
+        <div class="card card-body" style="margin-top:25px;">
+        <span style=" font-weight: 500; font-size: 16px">
+            <img style="float:left" class="rounded" width="60" height="60" src="@Url.Action("GetImage", "Products", new { productId = line.ProductID })" />
+            <span style="float:left; margin-top: 16px">
+                @Html.ActionLink(line.Title, "ProductDetails", "Products", new { category = line.Category, product_Id = line.ProductID }, null)
+            </span>
+            <span style="float: right; margin-top: 17px;">
+                @Ajax.ActionLink(" ", "RemoveItem", "Cart", new AjaxOptions { Url = Url.Action("RemoveItem", new { id = line.ProductID }), UpdateTargetId = "details" }, new { @class = "far fa-trash-alt" })
+            </span>
+            <span class="form-inline" style="float: right; margin-top: 11px">
+                @using (Ajax.BeginForm("ChangeQuantity",null, new AjaxOptions { Url = Url.Action("ChangeQuantity"), UpdateTargetId="details" }, new { @id="form" + line.ProductID }))
+                {
+                    @Html.Hidden("product_Id", line.ProductID)
+                    @Html.DropDownList("Quantity", list, new { @class = "form-control  rounded-pill", @style = "margin-right: 5px", @id = "quantity", @onchange="Change("+ line.ProductID +")" }) <span>szt.</span>
+                    <input style="display: none" type="submit" id="@line.ProductID" />
+                }
+            </span>
+            <span style="float: right; margin-right: 10px; margin-top: 17px">@line.Price.ToString("c")</span>
+            <span style="display: none">@(list.FirstOrDefault(x => x.Text == line.Quantity.ToString()).Selected = false)</span>
+        </span>
+        @if (TempData[line.ProductID.ToString()] != null)
+        {
+            <div class="alert-warning rounded-lg" style="height: 30px; margin-top: 15px;">
+                <span style="margin-bottom: auto; margin-top: auto">
+                    <span class="fas fa-info-circle" style="margin-left: 10px; margin-top: 7px"></span>
+                    <span>@TempData[line.ProductID.ToString()]</span>
+                </span>
+            </div>
+        }
+    </div>
+        }
+    </div>
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Podsumowanie zamówienia</h5>
+            </div>
+            <div class="card-body rounded-top">
+                <span style="font-weight: 500; font-size: 16px;">
+                    <span style="float: left;">Łączna kwota</span>
+                    <span style="float: right">@Model.ComputeTotalValue().ToString("c")</span>
+                </span>
+                @if (Model.Products.Count() != 0)
+                {
+                    @Html.ActionLink("Przejdź do dostawy", "CheckForQuantities", null, new { @style = "margin-top: 15px; width: 365px;", @class = "btn btn-outline-success rounded-pill" })
+                }
+                else
+                {
+                    @Html.ActionLink("Przejdź do dostawy", null, null, new { @style = "margin-top: 15px; width: 365px;", @class = "btn btn-outline-success rounded-pill disabled" })
+                }
+                <span style="color: gray; font-size: 14px; margin-top: 100px;">
+                    Dokończ składanie zamówienia - dodanie produktów do koszyka nie oznacza ich rezerwacji.
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>

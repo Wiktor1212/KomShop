@@ -1,4 +1,4 @@
-﻿@model KomShop.Web.Entities.Users
+﻿@model KomShop.Web.Entities.User
 @{
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
     ViewBag.Title = "Strona rejestracji";
@@ -13,6 +13,7 @@
                 <span>Wpisz poniżej wymagane dane</span>
             </div>
             <div class="card-body">
+                <!--Dane-->
                 @Html.LabelFor(m => m.Login, new { @style = "float: left; margin-left: 75px; font-size: 17px; font-weight: 500; margin-top: 5px;" })
                 @Html.TextBoxFor(m => m.Login, new { @class = "form-control col-sm-6 rounded-pill", @style = "float: left; margin-left: 35px;", @placeholder = "Tutaj wpisz login" })
                 @Html.ValidationMessageFor(m => m.Login, null, new { @style = "float: left; margin-left: 175px; color: red; padding-right: 55px;" })
@@ -33,6 +34,7 @@
         </div>
         <div class="float-left col-7" style="width: 400px; margin-top: 20px">
             <div>
+                <!--Regulamin-->
                 <h3>Regulamin</h3>
                 <span style="font-weight: 500">Aby dokończyć rejestrację, musisz zaakceptować nasz regulamin.</span>
             </div>

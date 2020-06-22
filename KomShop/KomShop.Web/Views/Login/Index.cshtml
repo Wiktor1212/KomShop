@@ -1,4 +1,4 @@
-﻿@model KomShop.Web.Entities.Users
+﻿@model KomShop.Web.Entities.User
 @{
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
     ViewBag.Title = "Strona logowania";
@@ -13,6 +13,7 @@
                 <span>Masz już konto? Wpisz swoje dane.</span>
             </div>
             <div class="card-body">
+                <!--Sekcja logowania-->
                 @Html.LabelFor(m => m.Login, new { @style = "float: left; margin-left: 50px; font-size: 20px; font-weight: 500" })
                 @Html.TextBoxFor(m => m.Login, new { @class = "form-control col-sm-6 rounded-pill", @style = "float: left; margin-left: 35px;" })
                 @Html.ValidationMessageFor(m => m.Login, null, new { @style = "float: left; margin-left: 160px; color: red; padding-right: 80px;" })
@@ -30,6 +31,7 @@
         </div>
         <div class="float-left col-7" style="width: 400px; margin-top: 20px">
             <div>
+                <!--Sekcja rejestracji-->
                 <h3>Nie masz jeszcze konta?</h3>
                 <span>Nie masz jeszcze konta? Kliknij załóż konto</span>
             </div>

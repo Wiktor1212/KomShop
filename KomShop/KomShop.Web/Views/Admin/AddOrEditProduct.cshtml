@@ -1,0 +1,27 @@
+﻿@model Object
+@{
+    Layout = "~/Views/Shared/_ModLayout.cshtml";
+}
+    <div style="margin-top: 10px;">
+            <h3>Dodawanie nowego przedmiotu w kategorii @ViewBag.Category</h3>
+            @using (Html.BeginForm("AddOrEditProduct", "Admin",new { category = ViewBag.Category },FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div style="width: 250px">
+                    @Html.EditorFor(x => x, new { htmlAttributes = new { @class="form-control" } })
+                    <label>Zdjęcie</label> <input id="image" type="file" name="image" size="40" onchange='$("#upload-file-info").html($(this).val());' />
+                    <span class="col-form-label label-info" id="upload-file-info"></span>
+                    @if(Model.GetType().GetProperty("ImageData").GetValue(Model) == null)
+                    {
+                        <div class="form-control-static">Brak zdjęcia</div>
+                    }
+                    else{
+                        <img class="img-thumbnail" width="150" height="150"
+                             src="@Url.Action("GetImage", "Product", new { productId = Model.GetType().GetProperty("Product_ID").GetValue(Model) })" />
+                    }
+                </div>
+                <div style="margin-top: 10px; width: 300px;">
+                    <button class="btn btn-secondary rounded-pill" type="reset">Resetuj</button>
+                    <button class="btn btn-success float-right rounded-pill" type="submit">Dodaj</button>
+                </div>
+            }
+    </div>

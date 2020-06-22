@@ -8,7 +8,7 @@ namespace KomShop.Web.Models
 {
     public class OrderModel
     {
-        public Users userDetails { get; set; }
+        public Delivery DeliveryDetails { get; set; }
         public Cart Cart { get; set; }
     }
 }

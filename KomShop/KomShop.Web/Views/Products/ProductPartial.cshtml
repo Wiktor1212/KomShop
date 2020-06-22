@@ -1,12 +1,16 @@
 ﻿@model KomShop.Web.Models.ShowItemModel
-@foreach (KomShop.Web.Entities.Item item in Model.Product)
+<!--Produkty-->
+@foreach (KomShop.Web.Entities.Product item in Model.Product)
 {
-    <a href=@Url.Action("ProductDetails", new { category = ViewBag.Category, product_Id = item.ProductID }) style="float: left;">
+    <a href=@Url.Action("ProductDetails", new { product_Id = item.ProductID }) style="float: left;">
         <div style="margin-right: 10px; width: 250px; height: 360px; border: 1px solid gray; position: relative;
                     border-radius: 15px; margin-top: 20px; text-align: center">
-            <h1 style="padding-bottom: 75px;">ZDJĘCIE PRZEDMOTU</h1>
+            <div style="margin-left:auto; margin-right:auto; padding-top: 30px; padding-bottom: 35px">
+                <img class="rounded" width="120" height="120" src="@Url.Action("GetImage", "Products", new { productId = item.ProductID })" />
+            </div>
             <b style="font-size: 16px; font-weight: 500; float:left; margin-left: 10px; text-align: left">@item.Title</b><br />
             <div style="float: left">
+                <!--Informacje-->
                     <span style="font-size: 14px; font-weight: 300; float:left; margin-left: 10px; padding-right: 50px;">
                         @Model.DetailsInfo[0] @item.FDetail @Model.Units[0]
                     </span>
@@ -19,12 +23,12 @@
             </div>
             @using (Html.BeginForm("AddItem", "Cart"))
             {
+                <!--Do koszyka-->
                 <div>
                     <span style="position:absolute;bottom: 5px; left: 0; color: black; font-size: 20px; font-weight: 400; margin-left: 15px; padding-top: 15px;">@item.Price.ToString("c")</span>
                     <div style="position:absolute; bottom: 0; right: 0; margin-right: 10px">
+                        @Html.Hidden("category", item.Category)
                         @Html.Hidden("ProductID", item.ProductID)
-                        @Html.Hidden("Price", item.Price)
-                        @Html.Hidden("Title", item.Title)
                         @Html.Hidden("returnURL", Request.Url.PathAndQuery)
                         <button type="submit" style="margin-bottom: 5px; right:0" class="btn btn-outline-success rounded-circle" ><span  class="fas fa-cart-plus"></span></button>
                     </div>

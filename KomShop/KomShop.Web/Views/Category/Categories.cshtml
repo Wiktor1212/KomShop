@@ -1,21 +1,24 @@
 ﻿@model List<KomShop.Web.Models.CategoryModel>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Wybierz kategorię";
 }
 <div style="margin-top: 25px; margin-left: 35px; font-size: 14px; font-weight: 500">
     @Html.Action("NavigationHistory","Category", new { Section = ViewBag.Section })
 </div>
-<div class="row" style="margin-top: 15px; margin-left: 35px;">
+
+<div class="row" style="margin-top: 15px; margin-left: 35px; ">
     <div class="card-body bg-light rounded shadow col-sm-3" style="text-align: center; height: 500px">
         <h3>Kategorie</h3>
-        @Html.Action("CartMenu", new { section = ViewBag.Section })
+        @Html.Action("CatMenu", new { section = ViewBag.Section })
     </div>
     <div class="card-body col-sm-8" style="margin-left: 25px;">
-        <h1 style="font-weight: 600">Kategorie</h1>
+        <h1 style="        font-weight: 600
+">Kategorie</h1>
         <p style="color: gray; font-size: 18px">w @ViewBag.Section</p>
         @foreach(var item in Model)
         {
-        <a href=@Url.Action("ShowProducts","Products", new { category = item.CategoryName }) style="float: left;" >
+        <a href=@Url.Action("ShowProducts","Products", new { category = item.CategoryName, section = ViewBag.Section }) style="float: left;" >
             <div style="margin-right: 10px; width: 250px; height: 175px; border: 1px solid gray; border-radius: 15px; margin-top: 20px; text-align: center">
                 <h1><span style="font-size: 115px; color: #262626; margin-top: 10px" class="@item.clas"></span></h1>
                 <b style="font-size: 18px; font-weight: 500">@item.CategoryName</b><br />

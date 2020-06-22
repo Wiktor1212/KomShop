@@ -1,0 +1,41 @@
+﻿@model List<string>
+@{ 
+    var sections = new List<string> //działy
+    {
+        "Laptopy i tablety",
+        "Telefony i GPS",
+        "Komputery stacjonarne",
+        "Podzespoły komputerowe",
+        "Urządzenia peryferyjne",
+        "Gaming",
+        "Foto, TV i audio",
+        "Oprogramowanie",
+        "Akcesoria"
+    };
+}
+<style>
+    #link:hover {
+        transform: scale(1.1);
+    }
+</style>
+<ul style="list-style-type: none; float:left; text-align: left; margin-right: 25px;">
+    @foreach (var Section in sections)
+    {
+        if (ViewBag.Section != Section) //Odnośniki dla każdego działu oprócz wybranego.
+        {
+            <li id="link">@Html.ActionLink(Section, "ShowCategories", new { section = Section })</li>
+        }
+        else //Lista podkategorii dla wybranego działu
+        {
+            <li><b>@Section</b></li>
+            <li>
+                <ul style="list-style-type: none; text-align: left">
+                    @foreach (var Category in Model)
+                    {
+                        <li id="link">@Html.ActionLink(Category, "ShowProducts","Products", new { category = Category },null)</li>
+                    }
+                </ul>
+            </li>
+        }
+    }
+</ul>

@@ -1,0 +1,74 @@
+﻿@model KomShop.Web.Models.ShowOrderDetailsModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Szczegóły zamówienia";
+}
+    <div class="row" style="width: 1100px; margin: auto; margin-top: 20px;">
+        <div class="col-2" style="margin-top: 60px">
+            <h6>@Html.ActionLink("Twoje dane", "Index")</h6>
+            <h6>@Html.ActionLink("Twoje zamówienia", "ShowOrders")</h6>
+        </div>
+        <div class="rounded-pill" style="border: solid 0.1px #dadada; margin-top: 60px;"></div>
+        <div class="col-9">
+            <h1><span class="fas fa-th-list" style="margin-right: 15px;"></span>Szczegóły</h1>
+            <table class="col-12">
+                <thead>
+                    <tr style="border-bottom: 2px solid #ebebeb">
+                        <td>Numer zamówienia</td>
+                        <td>Data złożenia</td>
+                        <td>Status</td>
+                        <td>Dostawa i płatność</td>
+                        <td>Wartość</td>
+
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                            <td>@Model.Order.Order_ID</td>
+                            <td>@Model.Order.Date.ToShortDateString()</td>
+                            <td>@Model.Order.Status</td>
+                            <td>dostawa kurierem - pobranie</td>
+                            <td>@Model.Order.Price.ToString("c")</td>
+                        </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 35px">
+                <h6>Adres odbioru</h6>
+                <span>@Model.Delivery.Name @Model.Delivery.Surname</span><br />
+                <span>@Model.Delivery.PostalCode @Model.Delivery.City</span><br />
+                <span>@Model.Delivery.Address</span><br />
+                <span>@Model.Delivery.Phone</span>
+            </div>
+            <table class="col-12" style="margin-top: 35px;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #ebebeb">
+                        <td colspan="2">Produkt</td>
+                        <td class="text-right">Cena</td>
+                        <td class="text-right">Ilość</td>
+                        <td class="text-right">Razem</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in Model.Products)
+                    {
+                        <tr style="border-bottom: 1px solid #ebebeb;">
+                            <td style="padding: 25px 25px 25px 25px"><img class="rounded" width="75" height="75" src="@Url.Action("GetImage", "Products", new { productId = item.ProductID })" /></td>
+                            <td>@item.Title</td>
+                            <td class="text-right">@item.Price.ToString("c")</td>
+                            <td class="text-right">@item.Quantity</td>
+                            <td class="text-right">@((item.Price * item.Quantity).ToString("c"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="border-top" style="float:right; margin-top: 50px; width: 300px">
+                <div>
+                    <div style="font-size: 17px">
+                        <span style="float: left">Koszt produktów:</span><span style="float: right">@Model.Order.Price.ToString("c")</span>
+                        <span style="float: left">Koszt dostawy:</span><span style="float: right">20,00 zł</span>
+                        <span style="float: left; font-weight: 600">Wartość zamówienia:</span><span style="float: right; font-weight: 600">@((Model.Order.Price + 20).ToString("c"))</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,25 @@
+﻿@model List<KomShop.Web.Models.ShowOrderModel>
+    <table border="1" style="margin: auto">
+        <thead>
+            <tr style="text-align:center">
+                <td width="200px">ID</td>
+                <td width="400px">Status</td>
+                <td width="200px">Cena</td>
+                <td width="200px">Akcja</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Order_ID</td>
+                    <td>@item.Status</td>
+                    <td>@item.Price.ToString("c")</td>
+                    <td style="padding-left:20px; word-spacing: 50px">
+                        @Html.ActionLink("Anuluj", "DeleteOrder")
+                        @Html.ActionLink("Edytuj", "EditOrder")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

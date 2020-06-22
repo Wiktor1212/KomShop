@@ -1,0 +1,72 @@
+﻿@model KomShop.Web.Models.OrderModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function buy() {
+        $("#form0").submit();
+    }
+</script>
+<div class="row" style="width: 1100px; margin: auto; margin-top: 25px;">
+    <hr style="width: 100%"/>
+    <div class="col-7">
+        <h1>Szczegóły zamówienia</h1>
+        <div class="alert alert-info" style="color: blue; font-size: 15px;" role="alert">
+            <span class="fas fa-info-circle" style="margin-right: 10px;"></span>Dostawa została wybrana automatycznie (kurier - płatność przy odbiorze).
+        </div>
+        <div>
+            <h3>1. Dane odbiorcy</h3>
+            <!--Dane adresowe odbiorcy-->
+            @using (Html.BeginForm("FinalizeOrder", "Orders", FormMethod.Post, new { @id = "form0" }))
+            {
+                @Html.TextBoxFor(x => x.DeliveryDetails.Name, new { @class = "form-control rounded-pill", @placeholder = "Imię" })
+                @Html.ValidationMessageFor(x => x.DeliveryDetails.Name, null, new { @style = "color: red; margin-left: 10px;" })
+                @Html.TextBoxFor(x => x.DeliveryDetails.Surname, new { @class = "form-control rounded-pill", @placeholder = "Nazwisko" })
+                @Html.ValidationMessageFor(x => x.DeliveryDetails.Surname, null, new { @style = "color: red; margin-left: 10px;" })
+                @Html.TextBoxFor(x => x.DeliveryDetails.Address, new { @class = "form-control rounded-pill", @placeholder = "Ulica i numer domu" })
+                @Html.ValidationMessageFor(x => x.DeliveryDetails.Address, null, new { @style = "color: red; margin-left: 10px; margin-bottom: 10px" })
+                @Html.TextBoxFor(x => x.DeliveryDetails.PostalCode, new { @class = "form-control rounded-pill", @placeholder = "Kod pocztowy" })
+                @Html.ValidationMessageFor(x => x.DeliveryDetails.PostalCode, null, new { @style = "color: red; margin-left: 10px; margin-bottom: 10px" })
+                @Html.TextBoxFor(x => x.DeliveryDetails.City, new { @class = "form-control rounded-pill", @placeholder = "Miejscowość" })
+                @Html.ValidationMessageFor(x => x.DeliveryDetails.City, null, new { @style = "color: red; margin-left: 10px; margin-bottom: 10px" })
+                @Html.TextBoxFor(x => x.DeliveryDetails.Phone, new { @class = "form-control rounded-pill", @placeholder = "Telefon" })
+                @Html.ValidationMessageFor(x => x.DeliveryDetails.Phone, null, new { @style = "color: red; margin-left: 10px; margin-bottom: 10px" })
+            }
+        </div>
+    </div>
+    <div class="col-1"></div>
+    <div class="col-4">
+        <div class="card" style="width: 350px">
+            <div class="card-body">
+                <!--Produkty w koszyku-->
+                @foreach (var item in Model.Cart.Products)
+                {
+                    <div class="row" style="margin-left: 5px; margin-right: 5px;">
+                        <img class="col" style="float:left" width="75" height="75" src="@Url.Action("GetImage", "Products", new { productId = item.ProductID })" />
+                        <div class="col-8" style="float: left; height: 75px">
+                            <span style="margin-bottom: auto;">@Html.ActionLink(item.Title, "ProductDetails", "Products", new { category = item.Category, product_Id = item.ProductID }, new { @style="float: left" })</span><br />
+                            <div style="width: 100%; ">
+                                <span style="margin-top: auto; float: left; margin-left: 10px">@item.Quantity szt.</span>
+                                <span style="margin-top: auto; float: right">@((item.Price * item.Quantity).ToString("c"))</span>
+                            </div>
+                        </div>
+                        <hr style="width: 90%" />
+                    </div>
+                }
+            </div>
+            <!--Kwota zamówienia-->
+            <div class="card-footer">
+                <div style="width: 100%">
+                    <span style="float: left">Wartość koszyka</span><span style="float:right">@Model.Cart.ComputeTotalValue().ToString("c")</span><br />
+                    <span style="float: left">Dostawa</span><span style="float:right">20,00 zł</span> <br />
+                </div>
+                <hr style="width:100%" />
+                <div style="width: 100%; font-size: 20px; font-weight: 600">
+                    <span style="float: left">Do zapłaty</span>
+                    <span style="float: right">@((Model.Cart.ComputeTotalValue() + 20).ToString("c"))</span><br />
+                </div>
+                <button type="button" class="btn btn-success rounded-pill" onclick="buy()" style="width: 310px; margin: auto; margin-top: 10px">Złóż zamówienie</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+﻿@{
+    Layout = "~/Views/Shared/_ModLayout.cshtml";
+    var details = new KomShop.Web.Models.CategoryDetails();
+}
+<script>
+    function GoNext(id) {
+        var category = $("#" + id).val();
+        window.location.href = '@Url.Action("AddOrEditProduct")' + '?category=' + category;
+    }
+</script>
+<h4 style="margin-left: 90px; margin-top: 25px;">Wybierz kategorię dla której chcesz dodać produkt</h4>
+<div class="row justify-content-between" style="width: 1100px; margin: auto">
+    <div class="col-3 card card-body" style="text-align: center; width: 225px; margin-top: 15px;">
+        <h5>Podzespoły</h5>
+        <select id="1" class="form-control" onchange="GoNext(1)">
+            <option>Wybierz kategorię</option>
+            @foreach (var item in details.Podzespoly)
+            {
+                <option>@item</option>
+            }
+        </select>
+    </div>
+    <div class="col-3 card card-body" style="text-align: center; width: 225px; margin-top: 15px;">
+        <h5>Peryferia</h5>
+        <select id="2" class="form-control" onchange="GoNext(2)">
+            <option>Wybierz kategorię</option>
+            @foreach (var item in details.Peryferia)
+            {
+                <option>@item</option>
+            }
+        </select>
+    </div>
+    <div class="col-3 card card-body" style="text-align: center; width: 225px; margin-top: 15px;">
+        <h5>Komputery stacjonarne</h5>
+        <select id="3" class="form-control" onchange="GoNext(3)">
+            <option>Wybierz kategorię</option>
+            @foreach (var item in details.Peryferia)
+            {
+                <option>@item</option>
+            }
+        </select>
+    </div>
+</div>

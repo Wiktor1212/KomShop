@@ -9,9 +9,9 @@ namespace KomShop.Web.Abstract
 {
     public interface IUserRepository
     {
-        IEnumerable<Users> Users { get; }
-        void Register(Users user);
-        void ChangePassword(int id, string NewPassword);
-        void AddAddressData(Users user);
+        IEnumerable<User> Users { get; }   //Zwraca repozytorium użytkowników.
+        void Register(User user);  //Dodaje nowego użytkownika.
+        void ChangePassword(int id, string NewPassword);    //Zmienia hasło użytkownika.
+        void AddAddressData(User user);    //Dodaje dane adresowe.
     }
 }

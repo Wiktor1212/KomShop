@@ -1,0 +1,64 @@
+﻿@model KomShop.Web.Models.FiltersAndSubcategoriesModel
+
+@{
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        Url = Url.Action("Filtr", new { category = (string)ViewBag.Category }),
+        UpdateTargetId = "items"
+    };
+}
+<script>
+    function setsort() {
+        $("#sub").click();
+    }
+    function AssignValue(id) {
+        var hidden = $("#Value" + id);
+        var selected = $("#" + id).val();
+        hidden.val(selected);
+    }
+    function ResetAll() {
+        var i = @Model.Filters.Filters.Count();
+        $("#pmin").val(0);
+        $("#pmax").val(0);
+        for (var n = 0; n < i; n++)
+        {
+            $("#Value" + n).val(null);
+        }
+        $("#sub2").click();
+    }
+</script>
+<!--Podkategorie-->
+<h2>Podkategorie</h2>
+@foreach (var item in Model.Subcategories)
+{
+    <span style="font-weight: 500; font-size: 20px">@Ajax.ActionLink(item.Text, "SignSubcategory", new { category = (string)ViewBag.Category, subcategory = item.Value }, new AjaxOptions { UpdateTargetId = "items", OnSuccess = "Submit()" })</span>
+    <br />
+}
+<!--Generator filtrów-->
+<h2 style="margin-top: 20px;">Filtry</h2>
+@using (Ajax.BeginForm("Filtr", new { category = (string)ViewBag.Category }, ajaxOpts, new { @class = "form-group row", @style = "margin-left: 5px" }))
+{
+    @Html.Hidden("category", (string)ViewBag.Category)
+    <h5>Cena:</h5>
+    <span class="form-inline" style="font-size: 16px; font-weight: 500; padding-bottom: 10px;">
+        Od: @Html.TextBoxFor(m => m.Filters.PriceMin, new { @id = "pmin", @class = "form-control col-sm-4 rounded-pill", @style = "margin-left: 10px; text-align: right", @Value = "" })
+        <b style="margin-left: 15px"></b>do: @Html.TextBoxFor(m => m.Filters.PriceMax, new { @id = "pmax", @class = "form-control col-sm-4 rounded-pill", @style = "margin-left: 10px; text-align: right", @Value = "" })
+    </span>
+    for (int i = 0; i < Model.Filters.Filters.Count(); i++)
+    {
+        var item = Model.Filters.Filters[i];
+        <div class="form-inline" style="width: 280px; margin-bottom: 15px">
+            <h5>@item.Name</h5>
+            @Html.DropDownListFor(m => item.Values.FirstOrDefault().Text, item.Values.AsEnumerable(), "Wybierz", new { @id = i, @onchange = "AssignValue(" + i + ")", @style = "margin-left: auto", @class = "form-control col-sm-5 rounded-pill" })
+            @Html.HiddenFor(m => m.Filters.Filters[i].Name, new { @id = "Name" + i })
+            @Html.HiddenFor(m => m.Filters.Filters[i].PropertyName, new { @id = "PropertyName" + i })
+            @Html.HiddenFor(m => m.Filters.Filters[i].Value, new { @id = "Value" + i })
+        </div>
+    }
+    <div style="width: 280px">
+        <button class="btn btn-secondary rounded-pill" style="float: left" type="reset" onclick="ResetAll()"><span style="margin-right: 5px; margin-top: 5px;" class="glyphicon glyphicon-repeat"></span>Resetuj</button>
+        <button class="btn btn-success rounded-pill" style="float: right;" onclick="setsort()" type="submit"><span style="margin-right: 5px; margin-top: 5px;" class="glyphicon glyphicon-search"></span>Filtruj</button>
+    </div>
+
+    <input type="submit" style="display: none" id="sub2" />
+}

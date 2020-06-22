@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using KomShop.Web.Abstract;
 using KomShop.Web.Entities;
 using KomShop.Web.Models;
@@ -12,44 +10,42 @@ namespace KomShop.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private IProcessorRepository ProcRepository;
-        private IGPURepository GPURepository;
-        private IPODRepository PODRepository;
-        public HomeController(IProcessorRepository processorRepository,                                  IGPURepository gpuRepository,
-                              IPODRepository podRepository)
+        private IProductRepository productRepository;   //Wszystkie produkty.
+        public HomeController(IProductRepository product)
         {
-            ProcRepository = processorRepository;
-            GPURepository = gpuRepository;
-            PODRepository = podRepository;
+            productRepository = product;
         }
-        // GET: Home
-        public ActionResult Index()
+        public ViewResult Index()
         {
-            HomeModel model = new HomeModel
+            HomeModel model = new HomeModel //Tworzenie nowego modelu dla strony głównej.
             {
-                PromotedThings = GetPromoted(),
-                PoDs = PODRepository.PoDs
+                PromotedThings = GetPromoted(),         //Promowane przedmioty.
+                Bestsellers = GetBestsellers(),         //Najlepiej sprzedawane przedmioty wg. ilości zamówień.
+                Latest = GetLatest()                    //5 ostatnio przeglądanych przedmiotów.
             };
             return View(model);
         }
         
-        public IEnumerable<PromotedThings> GetPromoted()
+        public IEnumerable<Product> GetPromoted()   //Wybiera promowane przedmioty.
         {
-            IEnumerable<Processor> processors = ProcRepository.Processors.Where(x => x.Promoted == true);
-            IEnumerable<GPU> gpus = GPURepository.GPUs.Where(x => x.Promoted == true);
-
-            List<PromotedThings> model = new List<PromotedThings>();
-
-            foreach (var item in processors)
+            return productRepository.items.Where(x => x.Promoted == true); //Wyszukuje z repozytorium przedmioty z wartością promoted równej true.
+        }
+        public IEnumerable<Product> GetBestsellers()    //Wybiera najlepiej sprzedające się przedmioty.
+        {
+            return productRepository.items.OrderByDescending(x => x.SoldPieces).Take(5);  //Sortuje repozytorium malejąco po ilości zamówień na dany przedmioti wybiera pierwsze 5.
+        }
+        public IEnumerable<Product> GetLatest() //Wyszukuje ostatnio przeglądane przedmioty po ich ID zapisanych w danych sesji.
+        {
+            List<Product> items = new List<Product>();  //Nowa lista produktów
+            if(Session["Latest"] != null)   //Jeśli dane sesji istnieją
             {
-                model.Add(new PromotedThings { Brand = item.Brand, Model = item.Model, Price = item.Price });
-            }
-            foreach (var item in gpus)
-            {
-                model.Add(new PromotedThings { Brand = item.Producent, Model = item.Model, Price = item.Price });
+                foreach(int id in (List<int?>)Session["Latest"])    //Dla każdego id zapisanego w danych sesji
+                {
+                    items.Add(productRepository.items.FirstOrDefault(x => x.ProductID == id));  //Dodaj produkt o konkretnym id
+                }   
             }
 
-            return model;
+            return Enumerable.Reverse(items).ToList();  //Zwraca odwróconą listę produktów, aby ostatnio przeglądana rzecz była pierwsza
         }
     }
 }

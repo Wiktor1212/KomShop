@@ -12,12 +12,15 @@ namespace KomShop.Web.Entities
         [Key]
         public int Order_ID { get; set; }
         public int Product_ID { get; set; }
+        public int User_ID { get; set; }
         public int Quantity { get; set; }
         [ForeignKey(nameof(Product_ID))]
-        public Processor Processor { get; set; }
+        public CPU Processor { get; set; }
         [ForeignKey(nameof(Product_ID))]
         public GPU GPU { get; set; }
         [ForeignKey(nameof(Order_ID))]
-        public Orders Order { get; set; }
+        public Order Order { get; set; }
+        [NotMapped]
+        public string Category { get; set; }
     }
 }

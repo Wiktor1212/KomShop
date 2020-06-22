@@ -1,27 +1,17 @@
-﻿using Castle.Core.Internal;
-using KomShop.Web.Abstract;
-using KomShop.Web.Entities;
+﻿using KomShop.Web.Abstract;
 using KomShop.Web.Models;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Security;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
 
 namespace KomShop.Web.Controllers
 {
     public class ProductsController : Controller
     {
-        private IProcessorRepository ProcRepository;
-        private IGPURepository GPURepository;
-        private IProductRepository productRepository;
-        private List<SubCategoriesModel> SubModel;
-        private ShowItemModel ItemsModel = new ShowItemModel();
-        private List<string> detailsInfo = new List<string>();
-        private ProductDetailsViewModel productDetails = new ProductDetailsViewModel();
+        private IProcessorRepository ProcRepository;    //repozytorium procesorów.
+        private IGPURepository GPURepository;   //Repozytorium kart graficznych.
+        private IProductRepository productRepository;   //Repozytorium produktów.
+        private ProductDetailsViewModel productDetails { get; set; }    //Szczegóły produktu.
 
         public ProductsController(IProcessorRepository processorRepository,
                                   IGPURepository gpuRepository,
@@ -32,193 +22,82 @@ namespace KomShop.Web.Controllers
             productRepository = prodRepository;
         }
       
-        public ViewResult ProductDetails(string category, int product_Id)
+        public ViewResult ProductDetails(int product_Id)   //Wyświetl stronę ze szczegółami produktu.
         {
-            switch(category)
-            {
-                case "Procesory":
-                    Processor processor = new Processor();
-                    productDetails = new ProductDetailsViewModel
-                    {
-                        Item = productRepository.TakeProcessors.FirstOrDefault(x => x.ProductID == product_Id),
-                        properties = ProcRepository.Processors.FirstOrDefault(x => x.Product_ID == product_Id).GetType().GetProperties().ToList(),
-                        DetailsInfo = processor.DetailsInfo,
-                        Units = processor.Units
-                    };
-                    return View(productDetails);
-                case "Karty graficzne":
-                    productDetails = new ProductDetailsViewModel
-                    {
-                        Item = productRepository.TakeGPUs.FirstOrDefault(x => x.ProductID == product_Id),
-                        properties = GPURepository.GPUs.FirstOrDefault(x => x.Product_ID == product_Id).GetType().GetProperties().ToList()
-                    };
-                    return View(productDetails);
-                default:
-                    return View();
-            }
+            AddLatest(product_Id);  //Dodaj jako ostatnio przeglądany produkt.
+            productDetails = productRepository.GetProductDetails(product_Id);    //Przypisz szczegóły zamówienia wywołując akcję.
+            return View(productDetails);    //Wygeneruj widok z przekazaniem modelu.
         }
-        public ActionResult ShowProducts(string category)
+        public FileContentResult GetImage(int productId)    //Wyświetla zdjęcie produktu.
         {
-            Session["SortType"] = "none";
-            Session["subcategory"] = "none";
-            switch (category)
-            {
-                case "Procesory":
-                    ViewBag.Section = "Podzespoły komputerowe";
-                    ViewBag.Category = "Procesory";
-                    ViewBag.Filter = "FiltrProcesory";
-                    return View();
-                case "Karty graficzne":
-                    ViewBag.Section = "Podzespoły komputerowe";
-                    ViewBag.Category = "Karty graficzne";
-                    ViewBag.Filter = "FiltrGPU";
-                    return View();
-                default:
-                    return View();
-            }
+            object product = productRepository.GetProduct(productId);
+            if (product.GetType().GetProperty("ImageData").GetValue(product) != null)
+                return File((byte[])product.GetType().GetProperty("ImageData").GetValue(product), (string)product.GetType().GetProperty("ImageMimeType").GetValue(product));
+            else
+                return null;
         }
-        public PartialViewResult FiltrProcesory(string subcategory = null, string socket = null, int? pricemin = null, int? pricemax = null, int? cores = null, int? cachemin = null, int? cachemax = null, string SortType = null)
+        public void AddLatest(int product_Id)   //Dodaj ostatnio przeglądany produkt.
         {
-            subcategory = subcategory != null ? subcategory : Session["subcategory"].ToString();
-            SortType = SortType != null ? SortType : Session["SortType"].ToString();
-            IEnumerable<Processor> cpu = ProcRepository.Processors;
-            if(subcategory != "none")
+            List<int?> latest = new List<int?>();   //Nowa lista z ID produktów.
+            if (Session["Latest"] != null)  //Jeżeli dane sesji istnieją.
             {
-                cpu = cpu.Where(p => p.Brand.Contains(subcategory));
-                ViewBag.SubCategory = subcategory;
-                Session["subcategory"] = subcategory;
+                latest = (List<int?>)Session["Latest"]; //Przypisz dane z danych sesji.
+                latest.Remove(latest.FirstOrDefault(x => x == product_Id)); //Usuwa przedmiot jeśli był w liście.
             }
-            if(socket != null)
+            if (latest.Count() == 5)    //Jeżeli w liście jest 5 produktów.
             {
-                cpu = cpu.Where(p => p.Socket.Contains(socket));
+                latest.RemoveAt(0); //Usuwa ostatni przeglądany produkt.
+                latest.Add(product_Id); //Dodaje nowy produkt do listy.
             }
-            if(pricemin != null)
+            else    //Jeżeli w liście nie ma 5 produktów.
             {
-                cpu = cpu.Where(p => p.Price >= pricemin);
+                latest.Add(product_Id); //Dodaje nowy produkt do listy.
             }
-            if(pricemax != null)
-            {
-                cpu = cpu.Where(p => p.Price <= pricemax);
-            }
-            if(cores != null)
-            {
-                cpu = cpu.Where(p => p.Cores == cores);
-            }
-            if(cachemin != null)
-            {
-                cpu = cpu.Where(p => p.Cache >= cachemin);
-            }
-            if(cachemax != null)
-            {
-                cpu = cpu.Where(p => p.Cache <= cachemax);
-            }
-            Processor processor = new Processor();
-            ItemsModel = new ShowItemModel
-            {
-                Product = productRepository.TakeProcessors.Where(p => cpu.Select(x => x.Product_ID).Contains(p.ProductID)).ToList(),
-                DetailsInfo = processor.DetailsInfo,
-                Units = processor.Units
-            };
-            ViewBag.Category = "Procesory";
-            if (SortType != "none")
-            {
-                ItemsModel.Product = productRepository.Sort(ItemsModel.Product, SortType);
-                Session["SortType"] = SortType;
-            }
-            return PartialView("ProductPartial", ItemsModel);
+            Session["Latest"] = latest; //Zapisuje listę.
         }
-        public PartialViewResult FiltrGPU(string subcategory = null, string producent = null, string model = null, string memorytype = null, int? memorysize = null, int? pricemin = null, int? pricemax = null, string SortType = null)
+        public ViewResult ShowProducts(string category, string section)   //Generuje stronę dla kategorii.
         {
-            subcategory = subcategory != null ? subcategory : Session["subcategory"].ToString();
-            SortType = SortType != null ? SortType : Session["SortType"].ToString();
-            IEnumerable<GPU> gpu = GPURepository.GPUs;
-            if(subcategory != "none")
-            {
-                gpu = gpu.Where(p => p.Brand.Contains(subcategory));
-                ViewBag.SubCategory = subcategory;
-                Session["subcategory"] = subcategory;
-            }
-            if(producent != null)
-            {
-                gpu = gpu.Where(p => p.Producent.Contains(producent));
-            }
-            if(model != null)
-            {
-                gpu = gpu.Where(p => p.Model.Contains(model));
-            }
-            if(memorytype != null)
-            {
-                gpu = gpu.Where(p => p.MemoryType.Contains(memorytype));
-            }
-            if(memorysize != null)
-            {
-                gpu = gpu.Where(p => p.Memory == memorysize);
-            }
-            if (pricemin != null)
-            {
-                gpu = gpu.Where(p => p.Price >= pricemin);
-            }
-            if (pricemax != null)
-            {
-                gpu = gpu.Where(p => p.Price <= pricemax);
-            }
-            GPU nowy = new GPU();
-            ItemsModel = new ShowItemModel
-            {
-                Product = productRepository.TakeGPUs.Where(p => gpu.Select(x => x.Product_ID).Contains(p.ProductID)).ToList(),
-                DetailsInfo = nowy.DetailsInfo,
-                Units = nowy.Units
-            };
-            if(SortType != null)
-            {
-                ItemsModel.Product = productRepository.Sort(ItemsModel.Product, SortType);
-                Session["SortType"] = SortType;
-            }
-            ViewBag.Category = "Karty graficzne";
-            return PartialView("ProductPartial", ItemsModel);
+            Session["sort"] = null;       //Usuwa dane sesji.
+            Session["subcategory"] = null;  //dla typu sortowania i podkategorii.
+
+            ViewBag.Section = section;      //Ustalanie danych Viewbag
+            ViewBag.Category = category;    //dla dalszego działania.
+
+            return View();
         }
-        public PartialViewResult Filtres(string category = null)
+        public void SignSubcategory(string subcategory)    //Przypisuje podkategorię.
         {
-            switch (category)
-            {
-                case "Procesory":
-                    return PartialView("~/Views/Filters/ProcesoryFilter.cshtml", new CPU());
-                case "Karty graficzne":
-                    return PartialView("~/Views/Filters/GPUFilter.cshtml", new GPUModel());
-                default:
-                    return PartialView("~/Views/Filters/ProcesoryFilter.cshtml", new CPU());
-            }
+            Session["subcategory"] = subcategory;   //Przypisuje podkategorię do danych sesji.
         }
-        
-        public PartialViewResult SubCategories(string category, string subcategory = null)
+        public void SignSorting(string sorting) //Przypisuje wybrany typ sortowania.
         {
-            switch(category)
-            {
-                case "Procesory":
-                    SubModel = new List<SubCategoriesModel>();
-                    foreach(var item in (Proc[])Enum.GetValues(typeof(Proc)))
-                    {
-                        SubModel.Add(new SubCategoriesModel { ThingName = string.Format("Procesory {0}", item.ToString()), Thing = item.ToString() });
-                    }
-                    ViewBag.Category = "Procesory";
-                    ViewBag.Section = "Podzespoły komputerowe";
-                    ViewBag.SubCategory = subcategory ?? null;
-                    ViewBag.Filtr = "FiltrProcesory";
-                    return PartialView(SubModel);
-                case "Karty graficzne":
-                    SubModel = new List<SubCategoriesModel>();
-                    foreach(var item in (Vid[])Enum.GetValues(typeof(Vid)))
-                    {
-                        SubModel.Add(new SubCategoriesModel { ThingName = string.Format("Karty {0}", item.ToString()), Thing = item.ToString() });
-                    }
-                    ViewBag.Category = "Karty graficzne";
-                    ViewBag.Section = "Podzespoły komputerowe";
-                    ViewBag.SubCategory = subcategory ?? null;
-                    ViewBag.Filtr = "FiltrGPU";
-                    return PartialView(SubModel);
-                default:
-                    return PartialView();
-            }
+            Session["sort"] = sorting;
+        }
+        public PartialViewResult Filtr(string category, FiltersModel filters = null)    //Filtruje i wyświetla listę produktów.
+        {
+            ShowItemModel model = new ShowItemModel();  //Nowy model widoku.
+            filters = filters ?? new FiltersModel();    //Użyte filtry.
+
+            model.Product = productRepository.Filtr(filters, category); //Pobiera repozytorium produktów dla odpowiedniej kategorii i je filtruje.
+            model.DetailsInfo = productRepository.GetDetailsInfo(category); //Pobiera nazwy wybranych szczegółów dla danej kategorii.
+            model.Units = productRepository.GetDetailsUnits(category);  //Pobiera jednostki do szczegółów.
+
+            return PartialView("ProductPartial", model);    //Wygenerowanie widoku z przekazaniem modelu.
+        }
+        public PartialViewResult FiltresAndSubcategories(string category)    //Generuje częściowy widok z dostępnymi filtrami i podkategoriami.
+        {
+            return PartialView("_PartialFilters", productRepository.GetFiltersAndSubcategories(category));   //Wygenerowanie częściowego widoku z przekazaniem modelu.
+        }
+        public JsonResult GetTitles(string term)    //Zwraca tytuły produktów
+        {
+            List<string> titles = productRepository.items.Where(x => x.Title.ToLower().Contains(term.ToLower())).Select(y => y.Title).ToList();
+
+            return Json(titles, JsonRequestBehavior.AllowGet);
+        }
+        public RedirectToRouteResult SearchProduct(string searchTerm)
+        {
+            var id = productRepository.items.FirstOrDefault(x => x.Title == searchTerm).ProductID;
+            return RedirectToAction("ProductDetails", new { product_Id = id });
         }
     }
 }

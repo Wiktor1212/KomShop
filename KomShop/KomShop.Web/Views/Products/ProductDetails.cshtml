@@ -8,42 +8,40 @@
         new SelectListItem{Text="3"},
         new SelectListItem {Text="4"}
     };
-    decimal rata = Model.Item.Price / 24;
+    decimal rata = Model.Price / 24;
 }
 <div class="card" style="margin: auto; width: 1100px; margin-top: 35px;">
     <div class="card-body form-inline">
-        <div class="border rounded-sm" style="height: 400px; width: 400px; margin-bottom: auto">
-            <h1>ZDJĘCIE <br />
-                PRZEDMIOTU <br />
-                400x400</h1>
+        <div class=" rounded-sm" style="height: 400px; width: 400px; margin-bottom: auto">
+            <div style="margin-left:auto; margin-right:auto; padding-top: 10px;">
+                <img class="rounded" width="400" height="400" src="@Url.Action("GetImage", "Products", new { productId = Model.Product_ID })" />
+            </div>
         </div>
         <div class="" style="height: 500px; width: 600px; margin-left: auto">
-            <h2 style="font-weight: 600; margin-bottom: 25px">@Model.Item.Title</h2>
+            <h2 style="font-weight: 600; margin-bottom: 25px">@Model.Title</h2>
             <div class="form-inline">
                 <div style="margin-right: auto; width: 250px; margin-bottom: auto">
+                    <!--Szczegóły produktu-->
+                    <h3>Szczegóły</h3>
                     <hr style="margin-top: auto" />
-                    <div style=" padding-right: 50px; margin-top: 10px">
-                        <span style="color: gray">@Model.DetailsInfo[0]:</span> @Model.Item.FDetail @Model.Units[0]
-                    </div>
-                    <div style=" padding-right: 50px; margin-top: 10px">
-                        <span style="color: gray">@Model.DetailsInfo[1]:</span> @Model.Item.SDetail @Model.Units[1]
-                    </div>
-                    <div style=" padding-right: 50px; margin-top: 10px">
-                        <span style="color: gray">@Model.DetailsInfo[2]:</span> @Model.Item.TDetail @Model.Units[2]
-                    </div>
-                    <hr />
+                    @foreach(var item in Model.Details)
+                    {
+                        <div style=" padding-right: 50px; margin-top: 10px">
+                            <span style="color: gray">@item.DetailName:</span> @item.Value @item.Units
+                        </div>
+                        <hr />
+                    }
+
                 </div>
                 <div class="card col-6" style="margin-left: auto; width: 200px">
                     <div class="card-body">
                         <div style="text-align: right; width:240px; font-weight: 500; font-size: 30px; color: dimgray; margin-bottom: 15px">
-                            @Model.Item.Price.ToString("c")
+                            @Model.Price.ToString("c")
                         </div>
                         @using (Html.BeginForm("AddItem", "Cart", FormMethod.Post, new { @class = "form-inline", @style = "width: 240px; float: left" }))
                         {
                             @Html.DropDownList("Quantity", selectList, new { @class = "form-control rounded-pill", @style = "margin-right: auto" })
-                            @Html.Hidden("ProductID", Model.Item.ProductID)
-                            @Html.Hidden("Price", Model.Item.Price)
-                            @Html.Hidden("Title", Model.Item.Title)
+                            @Html.Hidden("ProductID", Model.Product_ID)
                             @Html.Hidden("returnURL", Request.Url.PathAndQuery)
                             <input type="submit" class="btn btn-outline-success rounded-pill" style="margin-left: auto" value="Dodaj do koszyka" />
                         }
@@ -74,7 +72,7 @@
                             <span style="font-size: 35px; color: gold; margin-top: 5px;" class="fas fa-coins"></span>
                         </div>
                         <div class="col-10">
-                            <span>Rata już od @rata.ToString("c") / miesięcznie</span><br />
+                            <span>Rata już od @rata.ToString("c") / msc.</span><br />
                                                                                       <span>Oblicz ratę</span>
                         </div>
                     </div>
@@ -85,16 +83,6 @@
     </div>
     <div class="card-body">
         <hr style="background-color: black" />
-        <h1>OPIS</h1>
-    </div>
-    <div class="card-body">
-        <hr style="background-color: black" />
-        <h3>Specyfikacja</h3>
-        @foreach(System.Reflection.PropertyInfo property in Model.properties)
-        {
-            <div class="card-footer">
-                <span>@Html.Label(property.Name))</span>
-            </div>
-        }
+        <!--Opis produktu-->
     </div>
 </div>

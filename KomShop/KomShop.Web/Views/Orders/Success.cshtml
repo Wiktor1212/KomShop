@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div style="width: 1100px; margin: auto; margin-top: 35px; text-align: center">
+    <!--Informacja-->
+    <h1 style="color: green; font-size: 44px; ">
+        <span style="margin-right: 20px" class="far fa-check-circle"></span>
+        Zamówienie zostało złożone pomyślnie
+    </h1>
+    <h6>
+        Twoje zamówienie zostało wysłane. Możesz sprawdzać status swojego zamówienia @Html.ActionLink("tutaj", "ShowOrders", "Account")
+    </h6>
+</div>

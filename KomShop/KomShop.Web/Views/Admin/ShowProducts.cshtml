@@ -1,0 +1,39 @@
+﻿@model IEnumerable<KomShop.Web.Entities.Product>
+@{
+    Layout = "~/Views/Shared/_ModLayout.cshtml";
+}
+
+<div class="row" style="margin: auto; margin-top: 20px;">
+    <div class="card card-body col-3">
+        <h3>Filtry</h3>
+    </div>
+    <div>
+        <h4 style="margin-left: 20px">Produkty</h4>
+        <div class="card card-body" style="margin-left: 20px;">
+            <table border="1">
+                <thead>
+                    <tr style="text-align: center">
+                        <td width="450px">Tytuł</td>
+                        <td width="125px">Cena</td>
+                        <td width="75px">Ilość</td>
+                        <td width="200px">Akcje</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td style="text-align: right">@item.Price.ToString("c")</td>
+                            <td style="text-align: center">@item.Quantity</td>
+                            <td style="text-align: center">
+                                <a href="@Url.Action("AddOrEditProduct", new { category = item.Category, id=item.ProductID })" style="float:left; margin-left: 20px;"><span class="fas fa-edit"></span><span>Edytuj</span></a>
+                                <a href="@Url.Action("RemoveProduct", new { category = item.Category, id=item.ProductID })"><span class="fas fa-minus"></span><span>Usuń</span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
